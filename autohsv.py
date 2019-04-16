@@ -85,10 +85,14 @@ if __name__ == "__main__":
     original = open_image(FILE)
 
     # Convert image for each value in colors.py
-    image_number = 0
+    image_number = 1
     for value in colors.COLORS:
         new = convert_image(original, value[1], value[2], value[3])
 
-        output = os.path.join(DEST, PREFIX + str(image_number) + "_" + value[0] + ".png")
+        image_string = str(image_number)
+        if image_number < 10:
+            image_string = "0" + image_string
+
+        output = os.path.join(DEST, PREFIX + image_string + "_" + value[0] + ".png")
         save_image(new, output)
         image_number += 1
