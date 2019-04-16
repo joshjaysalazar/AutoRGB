@@ -92,3 +92,4 @@ if __name__ == "__main__":
 
         output = os.path.join(DEST, PREFIX + str(image_number) + "_" + value[0] + ".png")
         save_image(new, output)
+        image_number += 1
