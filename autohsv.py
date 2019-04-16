@@ -5,7 +5,6 @@
 # Released under the GNU General Public License
 
 import sys
-import PIL
 import colorsys
 from PIL import Image
 import os
