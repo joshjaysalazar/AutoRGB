@@ -1,6 +1,12 @@
 # AutoHSV
 A Python script to quickly process an image through different HSV values
 
+# Required Libaries
+This script runs on Python 3, and requires the additional library Pillow. It can
+be installed by running the following command:
+
+pip install pillow
+
 # How to Use
 Edit colors.py to add all the HSV values you want the script to run to. There
 are some sample values there to help you get started.
