@@ -8,8 +8,13 @@ import sys
 import colorsys
 from PIL import Image
 import os
+import logging
+import tkinter as tk
 
 import colors # Import python file with list of colors
+
+# Set logging settings
+logging.basicConfig(level=logging.DEBUG, filename="debug.log", filemode="w")
 
 # Parse the arguments given
 PREFIX = sys.argv[1]
@@ -44,6 +49,7 @@ def get_pixel(image, i, j):
 def convert_image(image, h_adjust, s_adjust, v_adjust):
     # Get size
     width, height = image.size
+    logging.info("Image size is " + str(width) + "px x " + str(height) + "px.")
 
     # Create new Image and a Pixel Map
     new = create_image(width, height)
