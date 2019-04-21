@@ -9,7 +9,6 @@ import colorsys
 from PIL import Image
 import os
 import logging
-import tkinter as tk
 
 import colors # Import python file with list of colors
 
