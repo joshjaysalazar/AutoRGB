@@ -1,8 +1,7 @@
 import tkinter as tk
 import tkinter.ttk as ttk
-import tkintertable as tktable
 
-class Main(tk.Frame):
+class MainWindow(tk.Frame):
     def __init__(self, master=None):
         super().__init__(master)
         self.master = master
@@ -70,16 +69,12 @@ class Main(tk.Frame):
         self.progress_bar = ttk.Progressbar(self, variable=self.progress_var, length=200)
         self.progress_bar.grid(column=0, row=10, columnspan=4)
 
+        # Color Table (Starts at column 4)
+        self.color_table = ttk.Treeview(self, columns=('Name', 'H', 'S', 'V'), displaycolumns='#all')
+        self.color_table.grid(column=4, row=0, rowspan=9, padx=10)
+
     def browse(self):
         pass
 
     def process(self):
         pass
-
-def main():
-    root = tk.Tk()
-    root.title('AutoHSV')
-
-    main = Main(root)
-
-    root.mainloop()

@@ -1,5 +1,12 @@
-import main_window
+import tkinter as tk
+
+import MainWindow
 #import recolor
 
 if __name__ == '__main__':
-    main_window.main()
+    root = tk.Tk()
+    root.title('AutoHSV')
+
+    main = MainWindow.MainWindow(root)
+
+    root.mainloop()
