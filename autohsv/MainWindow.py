@@ -71,10 +71,34 @@ class MainWindow(tk.Frame):
 
         # Color Table (Starts at column 4)
         self.color_table = ttk.Treeview(self, columns=('Name', 'H', 'S', 'V'), displaycolumns='#all')
-        self.color_table.grid(column=4, row=0, rowspan=9, padx=10)
+        self.color_table.grid(column=4, row=0, rowspan=9, columnspan=3, padx=10)
+
+        self.color_table.heading('Name', text='Name', anchor=tk.W)
+        self.color_table.heading('H', text='H')
+        self.color_table.heading('S', text='S')
+        self.color_table.heading('V', text='V')
+
+        self.color_table.column('#0', width=30)
+        self.color_table.column('Name', width=200)
+        self.color_table.column('H', width=40)
+        self.color_table.column('S', width=40)
+        self.color_table.column('V', width=40)
+
+        # Preset Buttons & Add Color Button
+        self.load_preset = tk.Button(self, text='Load Preset', command=self.browse, height = 2)
+        self.load_preset.grid(column=4, row=10)
+
+        self.save_preset = tk.Button(self, text='Save Preset', command=self.browse, height = 2)
+        self.save_preset.grid(column=5, row=10)
+
+        self.add_color = tk.Button(self, text='Add Color', command=self.add, height = 2)
+        self.add_color.grid(column=6, row=10)
 
     def browse(self):
         pass
 
     def process(self):
+        pass
+
+    def add(self):
         pass
