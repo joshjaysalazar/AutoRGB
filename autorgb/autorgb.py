@@ -1,3 +1,9 @@
+#!/usr/bin/python3
+
+# AutoRGB v0.1
+# by Joshua Jay Salazar
+# Released under the GNU General Public License
+
 import tkinter as tk
 
 import MainWindow
