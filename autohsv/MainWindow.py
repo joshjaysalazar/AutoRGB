@@ -1,10 +1,16 @@
 import tkinter as tk
-import tkinter.ttk as ttk
+from tkinter import ttk
+from tkinter import filedialog
+from tkinter import colorchooser
+import json
 
 class MainWindow(tk.Frame):
     def __init__(self, master=None):
         super().__init__(master)
         self.master = master
+
+        # Create color table
+        self.colors = {}
 
         # Give the contents of the window 15px of padding on the sides
         self.grid(row=0, padx=15, pady=15)
@@ -13,19 +19,19 @@ class MainWindow(tk.Frame):
         self.original_label = tk.Label(self, text='Original')
         self.original_label.grid(column=0, row=0, columnspan=4, sticky=tk.W)
 
-        self.origina_type_var = tk.StringVar()
-        self.origina_type_var.set('file')
-        self.origina_type_file = ttk.Radiobutton(self, text='File', variable=self.origina_type_var, value='file')
-        self.origina_type_file.grid(column=1, row=0, sticky=tk.W)
-        self.origina_type_folder = ttk.Radiobutton(self, text='Folder', variable=self.origina_type_var, value='folder')
-        self.origina_type_folder.grid(column=2, row=0, sticky=tk.W)
+        self.original_type_var = tk.StringVar()
+        self.original_type_var.set('file')
+        self.original_type_file = ttk.Radiobutton(self, text='File', variable=self.original_type_var, value='file')
+        self.original_type_file.grid(column=1, row=0, sticky=tk.W)
+        self.original_type_folder = ttk.Radiobutton(self, text='Folder', variable=self.original_type_var, value='folder')
+        self.original_type_folder.grid(column=2, row=0, sticky=tk.W)
 
         self.original_var = tk.StringVar()
         self.original_var.set('/path/to/file.png')
         self.original_entry = ttk.Entry(self, textvariable=self.original_var)
         self.original_entry.grid(column=0, row=1, columnspan=2)
 
-        self.original_button = ttk.Button(self, text='Browse...', command=self.browse)
+        self.original_button = ttk.Button(self, text='Browse...', command=self.browse_original)
         self.original_button.grid(column=2, row=1, columnspan=2, sticky=tk.E)
 
         # Destination
@@ -37,7 +43,7 @@ class MainWindow(tk.Frame):
         self.destination_entry = ttk.Entry(self, textvariable=self.destination_var)
         self.destination_entry.grid(column=0, row=3, columnspan=2)
 
-        self.destination_button = ttk.Button(self, text='Browse...', command=self.browse)
+        self.destination_button = ttk.Button(self, text='Browse...', command=self.browse_destination)
         self.destination_button.grid(column=2, row=3, columnspan=2, sticky=tk.E)
 
         # Output Format
@@ -92,14 +98,32 @@ class MainWindow(tk.Frame):
         self.color_table.column('V', width=40)
 
         # Preset Buttons & Add Color Button
-        self.load_preset = ttk.Button(self, text='Load Preset', command=self.browse)
+        self.load_preset = ttk.Button(self, text='Load Preset', command=self.load_preset)
         self.load_preset.grid(column=4, row=10)
 
         self.save_preset = ttk.Button(self, text='Save Preset', command=self.browse)
         self.save_preset.grid(column=5, row=10)
 
-        self.add_color = ttk.Button(self, text='Add Color', command=self.add)
+        self.add_color = ttk.Button(self, text='Add Color', command=self.add_color)
         self.add_color.grid(column=6, row=10)
+
+    def load_preset(self):
+        self.color_table.insert(parent='', index='end', values=('Test', 250, 100, 100))
+        self.color_table.insert(parent='', index='end', values=('Test2', 1, 2, 3))
+        self.color_table.insert(parent='', index='end', values=('Test3', 50, 50, 50))
+
+    def browse_original(self):
+        if self.original_type_var.get() == 'file':
+            target = filedialog.askopenfilename(title='Select File', defaultextension='.png', filetypes=(('Portable Network Graphics (.png)','*.png'), ('All Files','*.*')))
+            self.original_var.set(target)
+        elif self.original_type_var.get() == 'folder':
+            target = filedialog.askdirectory(title='Select Folder')
+            self.original_var.set(target)
+        print(self.original_var.get())
+
+    def browse_destination(self):
+        target = filedialog.askdirectory(title='Select Folder')
+        self.destination_var.set(target)
 
     def browse(self):
         pass
@@ -107,5 +131,7 @@ class MainWindow(tk.Frame):
     def process(self):
         pass
 
-    def add(self):
-        pass
+    def add_color(self):
+        new_color = colorchooser.askcolor()
+        if new_color != (None, None):
+            print ("whoops")
