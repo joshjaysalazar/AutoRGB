@@ -135,8 +135,9 @@ class MainWindow(tk.Frame):
     def load_preset_file(self):
         # Load a json file with colors listed
         target = filedialog.askopenfilename(title='Select File', defaultextension='.json', filetypes=(('JavaScript Object Notation (.json)','*.json'), ('All Files','*.*')))
-        with open(target, "r") as read_file:
-            data = json.load(read_file)
+        if target != '': # Make sure the user didn't cancel
+            with open(target, "r") as read_file:
+                data = json.load(read_file)
 
         # Clear self.colors to prepare for a new color list
         self.colors = []

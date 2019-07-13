@@ -16,7 +16,22 @@ class ProcessImages():
         if self.original_type == 'file':
             self.process_file(self.original_path, self.destination_path)
         elif self.original_type == 'folder':
-            pass
+            # Convert each file with a .png ending
+            for file in os.listdir(self.original_path):
+                if file.endswith('.png'):
+                    # Set path to current working file
+                    path = os.path.join(self.original_path, file)
+
+                    # Create a directory to send new files to
+                    folder_name = file[:-4] # Strip the .png off the end of the file name
+                    destination = self.destination_path + '/' + folder_name
+                    # If the folder doesn't exist yet, create it
+                    if not os.path.exists(destination):
+                        os.mkdir(destination)
+
+                    # Process those files!
+                    self.process_file(path, destination)
+
 
     def process_file(self, file, destination):
         # Load Image (JPEG/JPG needs libjpeg to load)
@@ -91,7 +106,10 @@ class ProcessImages():
                 r = pixel[0]
                 g = pixel[1]
                 b = pixel[2]
-                a = pixel[3]
+                if len(pixel) > 3: # Check to see if an alpha channel exists
+                    a = pixel[3]
+                else: # If it doesn't, just set alpha to full
+                    a = 255
 
                 # Convert to HSV space
                 h, s, v = colorsys.rgb_to_hsv(r/255., g/255., b/255.)
