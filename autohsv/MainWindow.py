@@ -70,7 +70,7 @@ class MainWindow(tk.Frame):
         self.color_mode_blend.grid(column=0, row=8, sticky=tk.W)
 
         # Process Images
-        self.process_images = ttk.Button(self, text='Process Images', command=self.process, width = 20)
+        self.process_images = ttk.Button(self, text='Process Images', command=self.process_image_files, width = 20)
         self.process_images.grid(column=1, row=6, columnspan=3, rowspan=3, sticky=tk.E)
 
         # Progress Bar
@@ -84,7 +84,8 @@ class MainWindow(tk.Frame):
 
         # Color Table (Starts at column 4)
         self.color_table = ttk.Treeview(self, columns=('Name', 'R', 'G', 'B'), displaycolumns='#all')
-        self.color_table.grid(column=4, row=0, rowspan=9, columnspan=3, padx=10)
+        self.color_table.grid(column=4, row=0, rowspan=9, columnspan=4, padx=10)
+        self.color_table.bind('<Double-1>', self.edit_value)
 
         self.color_table.heading('Name', text='Name', anchor=tk.W)
         self.color_table.heading('R', text='R')
@@ -98,14 +99,17 @@ class MainWindow(tk.Frame):
         self.color_table.column('B', width=40)
 
         # Preset Buttons & Add Color Button
-        self.load_preset = ttk.Button(self, text='Load Preset', command=self.load_preset)
+        self.load_preset = ttk.Button(self, text='Load Preset', command=self.load_preset_file)
         self.load_preset.grid(column=4, row=10)
 
-        self.save_preset = ttk.Button(self, text='Save Preset', command=self.browse)
+        self.save_preset = ttk.Button(self, text='Save Preset', command=self.save_preset_file)
         self.save_preset.grid(column=5, row=10)
 
         self.add_color = ttk.Button(self, text='Add Color', command=self.add_color)
         self.add_color.grid(column=6, row=10)
+
+        self.rename_color = ttk.Button(self, text='Rename Color', command=self.rename_color)
+        self.rename_color.grid(column=7, row=10)
 
     def browse_original(self):
         if self.original_type_var.get() == 'file':
@@ -120,7 +124,12 @@ class MainWindow(tk.Frame):
         target = filedialog.askdirectory(title='Select Folder')
         self.destination_var.set(target)
 
-    def load_preset(self):
+    def edit_value(self, event):
+        # This will eventually allow double-clicking to change values
+        item = self.color_table.identify('item',event.x,event.y)
+        print("you clicked on", self.color_table.item(item,"values"))
+
+    def load_preset_file(self):
         # Load a json file with colors listed
         target = filedialog.askopenfilename(title='Select File', defaultextension='.json', filetypes=(('JavaScript Object Notation (.json)','*.json'), ('All Files','*.*')))
         with open(target, "r") as read_file:
@@ -130,12 +139,12 @@ class MainWindow(tk.Frame):
         self.colors = []
 
         # Loop through every color in the file & convert each to a list item in self.colors
-        for color in data['colors']:
+        for color in data:
             new_value = []
-            new_value.append(color['name'])
-            new_value.append(color['R'])
-            new_value.append(color['G'])
-            new_value.append(color['B'])
+            new_value.append(color[0])
+            new_value.append(color[1])
+            new_value.append(color[2])
+            new_value.append(color[3])
             self.colors.append(new_value)
 
         # Clear the color table
@@ -146,17 +155,29 @@ class MainWindow(tk.Frame):
         for color in self.colors:
             self.color_table.insert(parent='', index='end', values=color)
 
-    def browse(self):
-        pass
+    def save_preset_file(self):
+        # Create a new JSON file to save todo
+        target = filedialog.asksaveasfilename(title='Save As...', defaultextension='.json', filetypes=(('JavaScript Object Notation (.json)','*.json'), ('All Files','*.*')))
+        if target != '': # Make sure the user didn't cancel
+            with open(target, "w") as write_file:
+                json.dump(self.colors, write_file, indent=2)
 
-    def process(self):
+    def process_image_files(self):
         pass
 
     def add_color(self):
+        # Bring up color chooser window
         new_color = colorchooser.askcolor()
 
         # If the user didn't click cancel, add the color to self.colors and to self.color_table
         if new_color != (None, None):
-            # Extract the RBG values, then convert to HSV values
-            r, g, b = int(new_color[0][0]), int(new_color[0][1]), int(new_color[0][2])
-            print(r, g, b)
+            # Extract the default name and color values into their own variables
+            name, r, g, b = new_color[1], int(new_color[0][0]), int(new_color[0][1]), int(new_color[0][2])
+
+            # Create the new list item and add it to self.colors and self.color_table
+            new_value = [name, r, g, b]
+            self.colors.append(new_value)
+            self.color_table.insert(parent='', index='end', values=new_value)
+
+    def rename_color(self):
+        pass
