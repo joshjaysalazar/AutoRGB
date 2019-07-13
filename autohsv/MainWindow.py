@@ -10,7 +10,7 @@ class MainWindow(tk.Frame):
         self.master = master
 
         # Create color table
-        self.colors = {}
+        self.colors = []
 
         # Give the contents of the window 15px of padding on the sides
         self.grid(row=0, padx=15, pady=15)
@@ -83,19 +83,19 @@ class MainWindow(tk.Frame):
         self.progress_bar.grid(column=0, row=10, columnspan=4)
 
         # Color Table (Starts at column 4)
-        self.color_table = ttk.Treeview(self, columns=('Name', 'H', 'S', 'V'), displaycolumns='#all')
+        self.color_table = ttk.Treeview(self, columns=('Name', 'R', 'G', 'B'), displaycolumns='#all')
         self.color_table.grid(column=4, row=0, rowspan=9, columnspan=3, padx=10)
 
         self.color_table.heading('Name', text='Name', anchor=tk.W)
-        self.color_table.heading('H', text='H')
-        self.color_table.heading('S', text='S')
-        self.color_table.heading('V', text='V')
+        self.color_table.heading('R', text='R')
+        self.color_table.heading('G', text='G')
+        self.color_table.heading('B', text='B')
 
         self.color_table.column('#0', width=30)
         self.color_table.column('Name', width=200)
-        self.color_table.column('H', width=40)
-        self.color_table.column('S', width=40)
-        self.color_table.column('V', width=40)
+        self.color_table.column('R', width=40)
+        self.color_table.column('G', width=40)
+        self.color_table.column('B', width=40)
 
         # Preset Buttons & Add Color Button
         self.load_preset = ttk.Button(self, text='Load Preset', command=self.load_preset)
@@ -106,11 +106,6 @@ class MainWindow(tk.Frame):
 
         self.add_color = ttk.Button(self, text='Add Color', command=self.add_color)
         self.add_color.grid(column=6, row=10)
-
-    def load_preset(self):
-        self.color_table.insert(parent='', index='end', values=('Test', 250, 100, 100))
-        self.color_table.insert(parent='', index='end', values=('Test2', 1, 2, 3))
-        self.color_table.insert(parent='', index='end', values=('Test3', 50, 50, 50))
 
     def browse_original(self):
         if self.original_type_var.get() == 'file':
@@ -125,6 +120,32 @@ class MainWindow(tk.Frame):
         target = filedialog.askdirectory(title='Select Folder')
         self.destination_var.set(target)
 
+    def load_preset(self):
+        # Load a json file with colors listed
+        target = filedialog.askopenfilename(title='Select File', defaultextension='.json', filetypes=(('JavaScript Object Notation (.json)','*.json'), ('All Files','*.*')))
+        with open(target, "r") as read_file:
+            data = json.load(read_file)
+
+        # Clear self.colors to prepare for a new color list
+        self.colors = []
+
+        # Loop through every color in the file & convert each to a list item in self.colors
+        for color in data['colors']:
+            new_value = []
+            new_value.append(color['name'])
+            new_value.append(color['R'])
+            new_value.append(color['G'])
+            new_value.append(color['B'])
+            self.colors.append(new_value)
+
+        # Clear the color table
+        for color in self.color_table.get_children():
+            self.color_table.delete(color)
+
+        # Add each color to the color table
+        for color in self.colors:
+            self.color_table.insert(parent='', index='end', values=color)
+
     def browse(self):
         pass
 
@@ -133,5 +154,9 @@ class MainWindow(tk.Frame):
 
     def add_color(self):
         new_color = colorchooser.askcolor()
+
+        # If the user didn't click cancel, add the color to self.colors and to self.color_table
         if new_color != (None, None):
-            print ("whoops")
+            # Extract the RBG values, then convert to HSV values
+            r, g, b = int(new_color[0][0]), int(new_color[0][1]), int(new_color[0][2])
+            print(r, g, b)
