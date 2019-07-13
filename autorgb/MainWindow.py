@@ -5,6 +5,7 @@ from tkinter import colorchooser
 import json
 
 import RenameWindow
+import ProcessImages
 
 class MainWindow(tk.Frame):
     def __init__(self, master=None):
@@ -120,7 +121,6 @@ class MainWindow(tk.Frame):
         elif self.original_type_var.get() == 'folder':
             target = filedialog.askdirectory(title='Select Folder')
             self.original_var.set(target)
-        print(self.original_var.get())
 
     def browse_destination(self):
         target = filedialog.askdirectory(title='Select Folder')
@@ -166,7 +166,16 @@ class MainWindow(tk.Frame):
                 json.dump(self.colors, write_file, indent=2)
 
     def process_image_files(self):
-        pass
+        # Gather all the data needed to run
+        original_type = self.original_type_var.get()
+        original_path = self.original_var.get()
+        destination_path = self.destination_var.get()
+        output_format = self.output_var.get()
+        color_mode = self.color_mode_var.get()
+        color_list = self.colors
+
+        # Convert!
+        new_images = ProcessImages.ProcessImages(original_type, original_path, destination_path, output_format, color_mode, color_list)
 
     def add_color(self):
         # Bring up color chooser window

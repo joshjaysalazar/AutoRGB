@@ -13,9 +13,9 @@ class ProcessImages():
         self.color_mode = color_mode
         self.color_list = color_list
 
-        if self.original_type = 'file':
+        if self.original_type == 'file':
             self.process_file(self.original_path, self.destination_path)
-        elif self.original_type = 'folder':
+        elif self.original_type == 'folder':
             pass
 
     def process_file(self, file, destination):
@@ -32,12 +32,12 @@ class ProcessImages():
             # Create a string for the current image number
             image_number_string = str(image_number)
             if image_number < 10:
-                image_number_string = "0" + image_string
+                image_number_string = "0" + image_number_string
 
             # Set up the output filename based on the user's formatting
             output_name = self.output_format
-            output_name.replace('%n', image_number_string) # Replace %n with the image number
-            output_name.replace('%c', value[0]) # Replace %c with the color name
+            output_name = output_name.replace('%n', image_number_string) # Replace %n with the image number
+            output_name = output_name.replace('%c', value[0]) # Replace %c with the color name
             output_name = output_name + '.png' # Add the .png suffix
 
             # Output the file
@@ -75,7 +75,7 @@ class ProcessImages():
         width, height = image.size
 
         # Convert RGB adjust to HSV adjust
-        h_adjust, s_adjust, v_adjust = colorsys.rgb_to_hsv(r/255., g/255., b/255.)
+        h_adjust, s_adjust, v_adjust = colorsys.rgb_to_hsv(r_adjust/255., g_adjust/255., b_adjust/255.)
 
         # Create new Image and a Pixel Map
         new = self.create_image(width, height)
