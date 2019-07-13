@@ -9,16 +9,23 @@ class MainWindow(tk.Frame):
         # Give the contents of the window 15px of padding on the sides
         self.grid(row=0, padx=15, pady=15)
 
-        # Original File
-        self.original_label = tk.Label(self, text='Original File')
+        # Original File/Folder
+        self.original_label = tk.Label(self, text='Original')
         self.original_label.grid(column=0, row=0, columnspan=4, sticky=tk.W)
+
+        self.origina_type_var = tk.StringVar()
+        self.origina_type_var.set('file')
+        self.origina_type_file = ttk.Radiobutton(self, text='File', variable=self.origina_type_var, value='file')
+        self.origina_type_file.grid(column=1, row=0, sticky=tk.W)
+        self.origina_type_folder = ttk.Radiobutton(self, text='Folder', variable=self.origina_type_var, value='folder')
+        self.origina_type_folder.grid(column=2, row=0, sticky=tk.W)
 
         self.original_var = tk.StringVar()
         self.original_var.set('/path/to/file.png')
-        self.original_entry = tk.Entry(self, textvariable=self.original_var)
+        self.original_entry = ttk.Entry(self, textvariable=self.original_var)
         self.original_entry.grid(column=0, row=1, columnspan=2)
 
-        self.original_button = tk.Button(self, text='Browse...', command=self.browse)
+        self.original_button = ttk.Button(self, text='Browse...', command=self.browse)
         self.original_button.grid(column=2, row=1, columnspan=2, sticky=tk.E)
 
         # Destination
@@ -27,10 +34,10 @@ class MainWindow(tk.Frame):
 
         self.destination_var = tk.StringVar()
         self.destination_var.set('/path/to/destination')
-        self.destination_entry = tk.Entry(self, textvariable=self.destination_var)
+        self.destination_entry = ttk.Entry(self, textvariable=self.destination_var)
         self.destination_entry.grid(column=0, row=3, columnspan=2)
 
-        self.destination_button = tk.Button(self, text='Browse...', command=self.browse)
+        self.destination_button = ttk.Button(self, text='Browse...', command=self.browse)
         self.destination_button.grid(column=2, row=3, columnspan=2, sticky=tk.E)
 
         # Output Format
@@ -39,7 +46,7 @@ class MainWindow(tk.Frame):
 
         self.output_var = tk.StringVar()
         self.output_var.set('Image%n_%c')
-        self.output_entry = tk.Entry(self, textvariable=self.output_var)
+        self.output_entry = ttk.Entry(self, textvariable=self.output_var)
         self.output_entry.grid(column=0, row=5, columnspan=3, sticky=tk.W+tk.E)
 
         self.output_suffix = tk.Label(self, text='.png')
@@ -51,13 +58,13 @@ class MainWindow(tk.Frame):
 
         self.color_mode_var = tk.StringVar()
         self.color_mode_var.set('shift')
-        self.color_mode_shift = tk.Radiobutton(self, text='Shift', variable=self.color_mode_var, value='shift')
+        self.color_mode_shift = ttk.Radiobutton(self, text='Shift', variable=self.color_mode_var, value='shift')
         self.color_mode_shift.grid(column=0, row=7, sticky=tk.W)
-        self.color_mode_blend = tk.Radiobutton(self, text='Blend', variable=self.color_mode_var, value='blend')
+        self.color_mode_blend = ttk.Radiobutton(self, text='Blend', variable=self.color_mode_var, value='blend')
         self.color_mode_blend.grid(column=0, row=8, sticky=tk.W)
 
         # Process Images
-        self.process_images = tk.Button(self, text='Process Images', command=self.process, width = 20, height = 2)
+        self.process_images = ttk.Button(self, text='Process Images', command=self.process, width = 20)
         self.process_images.grid(column=1, row=6, columnspan=3, rowspan=3, sticky=tk.E)
 
         # Progress Bar
@@ -85,13 +92,13 @@ class MainWindow(tk.Frame):
         self.color_table.column('V', width=40)
 
         # Preset Buttons & Add Color Button
-        self.load_preset = tk.Button(self, text='Load Preset', command=self.browse, height = 2)
+        self.load_preset = ttk.Button(self, text='Load Preset', command=self.browse)
         self.load_preset.grid(column=4, row=10)
 
-        self.save_preset = tk.Button(self, text='Save Preset', command=self.browse, height = 2)
+        self.save_preset = ttk.Button(self, text='Save Preset', command=self.browse)
         self.save_preset.grid(column=5, row=10)
 
-        self.add_color = tk.Button(self, text='Add Color', command=self.add, height = 2)
+        self.add_color = ttk.Button(self, text='Add Color', command=self.add)
         self.add_color.grid(column=6, row=10)
 
     def browse(self):
