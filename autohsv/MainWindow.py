@@ -156,7 +156,7 @@ class MainWindow(tk.Frame):
             self.color_table.insert(parent='', index='end', values=color)
 
     def save_preset_file(self):
-        # Create a new JSON file to save todo
+        # Create a new JSON file to save self.colors
         target = filedialog.asksaveasfilename(title='Save As...', defaultextension='.json', filetypes=(('JavaScript Object Notation (.json)','*.json'), ('All Files','*.*')))
         if target != '': # Make sure the user didn't cancel
             with open(target, "w") as write_file:
