@@ -74,7 +74,7 @@ class MainWindow(tk.Frame):
 
         # Process Images
         self.process_images = ttk.Button(self, text='Process Images', command=self.process_image_files, width = 20)
-        self.process_images.grid(column=1, row=6, columnspan=3, rowspan=3, sticky=tk.E)
+        self.process_images.grid(column=1, row=6, columnspan=3, rowspan=3, sticky=tk.E+tk.N+tk.S, padx=(10, 0), pady=10)
 
         # Progress Bar
         self.progress_label = tk.Label(self, text='Processing file 0 of 0...')
