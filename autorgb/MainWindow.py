@@ -97,7 +97,7 @@ class MainWindow(tk.Frame):
 
         # Color Table (Starts at column 4)
         self.color_table = ttk.Treeview(self, columns=('Name', 'R', 'G', 'B'), displaycolumns='#all')
-        self.color_table.grid(column=4, row=0, rowspan=9, columnspan=4, padx=10)
+        self.color_table.grid(column=4, row=0, rowspan=9, columnspan=5, padx=10)
         self.color_table.bind('<Double-1>', self.rename_color)
 
         self.color_table.heading('Name', text='Name', anchor=tk.W)
@@ -105,13 +105,13 @@ class MainWindow(tk.Frame):
         self.color_table.heading('G', text='G')
         self.color_table.heading('B', text='B')
 
-        self.color_table.column('#0', width=30)
-        self.color_table.column('Name', width=200)
-        self.color_table.column('R', width=40)
-        self.color_table.column('G', width=40)
-        self.color_table.column('B', width=40)
+        self.color_table.column('#0', width=50)
+        self.color_table.column('Name', width=250)
+        self.color_table.column('R', width=50)
+        self.color_table.column('G', width=50)
+        self.color_table.column('B', width=50)
 
-        # Preset Buttons & Add Color Button
+        # Preset Buttons
         self.load_preset_button = ttk.Button(self, text='Load Preset', command=self.load_preset_file)
         self.load_preset_button.grid(column=4, row=10)
 
@@ -121,8 +121,11 @@ class MainWindow(tk.Frame):
         self.add_color_button = ttk.Button(self, text='Add Color', command=self.add_color)
         self.add_color_button.grid(column=6, row=10)
 
+        self.remove_color_button = ttk.Button(self, text='Remove Color', command=self.remove_color)
+        self.remove_color_button.grid(column=7, row=10)
+
         self.rename_color_button = ttk.Button(self, text='Rename Color', command=self.rename_color)
-        self.rename_color_button.grid(column=7, row=10)
+        self.rename_color_button.grid(column=8, row=10)
 
     def browse_original(self):
         if self.original_type_var.get() == 'file':
@@ -199,6 +202,15 @@ class MainWindow(tk.Frame):
             new_value = [name, r, g, b]
             self.colors.append(new_value)
             self.color_table.insert(parent='', index='end', values=new_value)
+
+    def remove_color(self):
+        if self.color_table.selection() != (): # Make sure the user hasn't selected nothing, otherwise an error will be thrown
+            selected_entry = self.color_table.selection()[0] # Get the selection the user has chosen
+            selected_index = self.color_table.index(selected_entry) # Get that selection's index number
+
+            # Delete the value from the color table and color list
+            self.color_table.delete(selected_entry)
+            del self.colors[selected_index]
 
     def rename_color(self, event=None):
         if self.color_table.selection() != (): # Make sure the user hasn't selected nothing, otherwise an error will be thrown
