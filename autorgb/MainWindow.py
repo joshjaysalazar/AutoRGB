@@ -84,7 +84,7 @@ class MainWindow(tk.Frame):
 
         # Process Images
         self.process_images = ttk.Button(self, text='Process Images', command=self.process_image_files, width = 20)
-        self.process_images.grid(column=1, row=6, columnspan=3, rowspan=3, sticky=tk.E+tk.N+tk.S, padx=(10, 0), pady=10)
+        self.process_images.grid(column=1, row=6, columnspan=3, rowspan=3, sticky=tk.E+tk.N+tk.S, padx=(10, 0), pady=(10,0))
 
         # Progress Bar
         self.progress_label = tk.Label(self, text='Ready.')
@@ -92,8 +92,8 @@ class MainWindow(tk.Frame):
 
         self.progress_var = tk.DoubleVar() # Assume that total number of images will be converted to percentage
         self.progress_var.set(0)
-        self.progress_bar = ttk.Progressbar(self, variable=self.progress_var, length=200)
-        self.progress_bar.grid(column=0, row=10, columnspan=4)
+        self.progress_bar = ttk.Progressbar(self, variable=self.progress_var)
+        self.progress_bar.grid(column=0, row=10, columnspan=4, sticky=tk.E+tk.W)
 
         # Color Table (Starts at column 4)
         self.color_table = ttk.Treeview(self, columns=('Name', 'R', 'G', 'B'), displaycolumns='#all')
@@ -113,7 +113,7 @@ class MainWindow(tk.Frame):
 
         # Preset Buttons
         self.load_preset_button = ttk.Button(self, text='Load Preset', command=self.load_preset_file)
-        self.load_preset_button.grid(column=4, row=10)
+        self.load_preset_button.grid(column=4, row=10, padx=(10,0))
 
         self.save_preset_button = ttk.Button(self, text='Save Preset', command=self.save_preset_file)
         self.save_preset_button.grid(column=5, row=10)
@@ -125,7 +125,7 @@ class MainWindow(tk.Frame):
         self.remove_color_button.grid(column=7, row=10)
 
         self.rename_color_button = ttk.Button(self, text='Rename Color', command=self.rename_color)
-        self.rename_color_button.grid(column=8, row=10)
+        self.rename_color_button.grid(column=8, row=10, padx=(0, 10))
 
     def browse_original(self):
         if self.original_type_var.get() == 'file':
