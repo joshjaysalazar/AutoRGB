@@ -88,7 +88,7 @@ class MainWindow(tk.Frame):
         # Color Table (Starts at column 4)
         self.color_table = ttk.Treeview(self, columns=('Name', 'R', 'G', 'B'), displaycolumns='#all')
         self.color_table.grid(column=4, row=0, rowspan=9, columnspan=4, padx=10)
-        self.color_table.bind('<Double-1>', self.edit_value)
+        self.color_table.bind('<Double-1>', self.rename_color)
 
         self.color_table.heading('Name', text='Name', anchor=tk.W)
         self.color_table.heading('R', text='R')
@@ -102,17 +102,17 @@ class MainWindow(tk.Frame):
         self.color_table.column('B', width=40)
 
         # Preset Buttons & Add Color Button
-        self.load_preset = ttk.Button(self, text='Load Preset', command=self.load_preset_file)
-        self.load_preset.grid(column=4, row=10)
+        self.load_preset_button = ttk.Button(self, text='Load Preset', command=self.load_preset_file)
+        self.load_preset_button.grid(column=4, row=10)
 
-        self.save_preset = ttk.Button(self, text='Save Preset', command=self.save_preset_file)
-        self.save_preset.grid(column=5, row=10)
+        self.save_preset_button = ttk.Button(self, text='Save Preset', command=self.save_preset_file)
+        self.save_preset_button.grid(column=5, row=10)
 
-        self.add_color = ttk.Button(self, text='Add Color', command=self.add_color)
-        self.add_color.grid(column=6, row=10)
+        self.add_color_button = ttk.Button(self, text='Add Color', command=self.add_color)
+        self.add_color_button.grid(column=6, row=10)
 
-        self.rename_color = ttk.Button(self, text='Rename Color', command=self.rename_color)
-        self.rename_color.grid(column=7, row=10)
+        self.rename_color_button = ttk.Button(self, text='Rename Color', command=lambda: self.rename_color(event=None))
+        self.rename_color_button.grid(column=7, row=10)
 
     def browse_original(self):
         if self.original_type_var.get() == 'file':
@@ -125,12 +125,6 @@ class MainWindow(tk.Frame):
     def browse_destination(self):
         target = filedialog.askdirectory(title='Select Folder')
         self.destination_var.set(target)
-
-    def edit_value(self, event):
-        # This will eventually allow double-clicking to change values
-        # item = self.color_table.identify('item',event.x,event.y)
-        # print("you clicked on", self.color_table.item(item,"values"))
-        pass
 
     def load_preset_file(self):
         # Load a json file with colors listed
@@ -196,7 +190,7 @@ class MainWindow(tk.Frame):
             self.colors.append(new_value)
             self.color_table.insert(parent='', index='end', values=new_value)
 
-    def rename_color(self):
+    def rename_color(self, event):
         if self.color_table.selection() != (): # Make sure the user hasn't selected nothing, otherwise an error will be thrown
             selected_entry = self.color_table.selection()[0] # Get the selection the user has chosen
             selected_index = self.color_table.index(selected_entry) # Get that selection's index number
@@ -205,5 +199,12 @@ class MainWindow(tk.Frame):
             window = tk.Toplevel(self)
             window.wm_title('Rename Color')
             window.attributes("-toolwindow", 1)
+
             frame = RenameWindow.RenameWindow(window, self.colors, self.color_table, selected_entry, selected_index)
             frame.grid(padx=10, pady=10)
+
+            # Position the window reasonably within the main window
+            window.update_idletasks() # Make sure size & position are up to date
+            win_width, win_height = window.winfo_width(), window.winfo_height()
+            main_x, main_y = self.master.winfo_x(), self.master.winfo_y()
+            window.geometry('%dx%d+%d+%d' % (win_width, win_height, main_x + 300, main_y + 100))

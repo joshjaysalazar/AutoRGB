@@ -21,7 +21,6 @@ class RenameWindow(tk.Frame):
         self.button.grid(column=1, row=0, padx=(10, 0))
 
     def rename_and_close(self):
-        print(self.selected_entry)
         self.color_table.set(self.selected_entry, column='Name', value=self.rename_var.get()) # Update the table
         self.colors[self.selected_index][0] = self.rename_var.get() # Update the colors array
         self.toplevel.destroy()
