@@ -4,18 +4,32 @@ from PIL import Image
 import os
 
 class ProcessImages():
-    def __init__(self, original_type, original_path, destination_path, output_format, color_mode, color_list):
+    def __init__(self, master, original_type, original_path, destination_path, output_format, color_mode, color_list, progress_bar, progress_label):
         # Expose needed variables to all functions in the class
+        self.master = master
         self.original_type = original_type
         self.original_path = original_path
         self.destination_path = destination_path
         self.output_format = output_format
         self.color_mode = color_mode
         self.color_list = color_list
+        self.progress_bar = progress_bar
+        self.progress_label = progress_label
+
+        self.progress_bar.set(0.0)
+        self.number_of_images = 0
+        self.total_processed = 0
 
         if self.original_type == 'file':
+            self.number_of_images = 1 # set number of images to 1
             self.process_file(self.original_path, self.destination_path)
         elif self.original_type == 'folder':
+            self.number_of_images = 0 # reset the image count
+            # Count the number of PNGs in the folder
+            for file in os.listdir(self.original_path):
+                if file.endswith('.png'):
+                    self.number_of_images += 1
+
             # Convert each file with a .png ending
             for file in os.listdir(self.original_path):
                 if file.endswith('.png'):
@@ -31,7 +45,6 @@ class ProcessImages():
 
                     # Process those files!
                     self.process_file(path, destination)
-
 
     def process_file(self, file, destination):
         # Load Image (JPEG/JPG needs libjpeg to load)
@@ -58,7 +71,31 @@ class ProcessImages():
             # Output the file
             output = os.path.join(destination, output_name)
             self.save_image(new, output)
+
+            # Update progress
+            self.total_processed += 1
+            self.update_progress()
+
+            # Increment image number
             image_number += 1
+
+    def update_progress(self):
+        total_queued = len(self.color_list) * self.number_of_images
+        if self.total_processed < total_queued:
+            progress_out_of = 'Processed image ' + str(self.total_processed) + ' of ' + str(total_queued) + '...'
+            self.progress_label.config(text=progress_out_of)
+        elif self.total_processed == total_queued:
+            self.progress_label.config(text='Finished processing ' + str(total_queued) + ' images.')
+        elif self.total_processed == 0:
+            self.progress_label.config(text='Ready.')
+        else:
+            self.progress_label.config(text='Error.')
+
+        progress_percentage = (self.total_processed / total_queued) * 100 # Get the progress in percent
+        self.progress_bar.set(progress_percentage) # Update the progress bar
+
+        # Make sure to update the tkinter window, or the program appears frozen
+        self.master.update()
 
     # Open an Image
     def open_image(self, path):
@@ -89,9 +126,6 @@ class ProcessImages():
         # Get size
         width, height = image.size
 
-        # Convert RGB adjust to HSV adjust
-        h_adjust, s_adjust, v_adjust = colorsys.rgb_to_hsv(r_adjust/255., g_adjust/255., b_adjust/255.)
-
         # Create new Image and a Pixel Map
         new = self.create_image(width, height)
         pixels = new.load()
@@ -111,13 +145,20 @@ class ProcessImages():
                 else: # If it doesn't, just set alpha to full
                     a = 255
 
+                # Convert RGB adjust to HSV adjust
+                h_adjust, s_adjust, v_adjust = colorsys.rgb_to_hsv(r_adjust/255., g_adjust/255., b_adjust/255.)
+
                 # Convert to HSV space
                 h, s, v = colorsys.rgb_to_hsv(r/255., g/255., b/255.)
 
                 # Convert each value to the value in the list
-                h = h_adjust
-                s = s * s_adjust
-                v = v * v_adjust
+                if self.color_mode == 'colorize':
+                    # Shift the colors
+                    h = h_adjust
+                    s = s * s_adjust
+                    v = v * v_adjust
+                elif self.color_mode == 'average':
+                    h = (h + h_adjust) / 2
 
                 # Convert back to RGB
                 r, g, b = colorsys.hsv_to_rgb(h, s, v)

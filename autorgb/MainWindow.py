@@ -66,18 +66,18 @@ class MainWindow(tk.Frame):
         self.color_mode_label.grid(column=0, row=6, sticky=tk.W)
 
         self.color_mode_var = tk.StringVar()
-        self.color_mode_var.set('shift')
-        self.color_mode_shift = ttk.Radiobutton(self, text='Shift', variable=self.color_mode_var, value='shift')
-        self.color_mode_shift.grid(column=0, row=7, sticky=tk.W)
-        self.color_mode_blend = ttk.Radiobutton(self, text='Blend', variable=self.color_mode_var, value='blend')
-        self.color_mode_blend.grid(column=0, row=8, sticky=tk.W)
+        self.color_mode_var.set('colorize')
+        self.color_mode_colorize = ttk.Radiobutton(self, text='Colorize', variable=self.color_mode_var, value='colorize')
+        self.color_mode_colorize.grid(column=0, row=7, sticky=tk.W)
+        self.color_mode_average = ttk.Radiobutton(self, text='Average', variable=self.color_mode_var, value='average')
+        self.color_mode_average.grid(column=0, row=8, sticky=tk.W)
 
         # Process Images
         self.process_images = ttk.Button(self, text='Process Images', command=self.process_image_files, width = 20)
         self.process_images.grid(column=1, row=6, columnspan=3, rowspan=3, sticky=tk.E+tk.N+tk.S, padx=(10, 0), pady=10)
 
         # Progress Bar
-        self.progress_label = tk.Label(self, text='Processing file 0 of 0...')
+        self.progress_label = tk.Label(self, text='Ready.')
         self.progress_label.grid(column=0, row=9, columnspan=4, sticky=tk.W)
 
         self.progress_var = tk.DoubleVar() # Assume that total number of images will be converted to percentage
@@ -168,15 +168,19 @@ class MainWindow(tk.Frame):
 
     def process_image_files(self):
         # Gather all the data needed to run
+        master = self.master
         original_type = self.original_type_var.get()
         original_path = self.original_var.get()
         destination_path = self.destination_var.get()
         output_format = self.output_var.get()
         color_mode = self.color_mode_var.get()
         color_list = self.colors
+        progress_bar = self.progress_var
+        progress_label = self.progress_label
 
         # Convert!
-        new_images = ProcessImages.ProcessImages(original_type, original_path, destination_path, output_format, color_mode, color_list)
+        new_images = ProcessImages.ProcessImages(master, original_type, original_path, destination_path, output_format, color_mode, color_list, progress_bar, progress_label)
+        del new_images
 
     def add_color(self):
         # Bring up color chooser window
