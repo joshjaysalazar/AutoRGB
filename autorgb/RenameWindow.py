@@ -15,12 +15,14 @@ class RenameWindow(tk.Frame):
         self.rename_var = tk.StringVar()
         self.rename_var.set('')
         self.rename_entry = ttk.Entry(self, textvariable=self.rename_var)
+        self.rename_entry.bind('<Return>', self.rename_and_close)
         self.rename_entry.grid(column=0, row=0)
+        self.rename_entry.focus_force() # Puts the cursor in the entry field automatically
 
         self.button = ttk.Button(self, text="Rename", command=self.rename_and_close)
         self.button.grid(column=1, row=0, padx=(10, 0))
 
-    def rename_and_close(self):
+    def rename_and_close(self, event=None):
         self.color_table.set(self.selected_entry, column='Name', value=self.rename_var.get()) # Update the table
         self.colors[self.selected_index][0] = self.rename_var.get() # Update the colors array
         self.toplevel.destroy()

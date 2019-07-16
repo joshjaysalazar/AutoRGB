@@ -66,6 +66,9 @@ class ProcessImages():
             output_name = self.output_format
             output_name = output_name.replace('%n', image_number_string) # Replace %n with the image number
             output_name = output_name.replace('%c', value[0]) # Replace %c with the color name
+            output_name = output_name.replace('%r', str(value[1])) # Replace %r with the red value
+            output_name = output_name.replace('%g', str(value[2])) # Replace %g with the green value
+            output_name = output_name.replace('%b', str(value[3])) # Replace %b with the blue value
             output_name = output_name + '.png' # Add the .png suffix
 
             # Output the file

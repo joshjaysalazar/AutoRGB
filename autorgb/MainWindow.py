@@ -6,6 +6,7 @@ import json
 
 import RenameWindow
 import ProcessImages
+import CreateToolTip
 
 class MainWindow(tk.Frame):
     def __init__(self, master=None):
@@ -50,7 +51,7 @@ class MainWindow(tk.Frame):
         self.destination_button.grid(column=2, row=3, columnspan=2, sticky=tk.E)
 
         # Output Format
-        self.output_label = tk.Label(self, text='Output Format (?)')
+        self.output_label = tk.Label(self, text='Output Format')
         self.output_label.grid(column=0, row=4, columnspan=4, sticky=tk.W)
 
         self.output_var = tk.StringVar()
@@ -58,19 +59,28 @@ class MainWindow(tk.Frame):
         self.output_entry = ttk.Entry(self, textvariable=self.output_var)
         self.output_entry.grid(column=0, row=5, columnspan=3, sticky=tk.W+tk.E)
 
+        self.output_tooltip = CreateToolTip.CreateToolTip(self.output_entry, \
+                                                          '%n = Image Number\n'
+                                                          '%c = Name of Color\n'
+                                                          '%r = Red Value\n'
+                                                          '%g = Green Value\n'
+                                                          '%b = Blue Value')
+
         self.output_suffix = tk.Label(self, text='.png')
         self.output_suffix.grid(column=3, row=5, sticky=tk.E)
 
         # Color Mode
-        self.color_mode_label = tk.Label(self, text='Color Mode (?)')
+        self.color_mode_label = tk.Label(self, text='Color Mode')
         self.color_mode_label.grid(column=0, row=6, sticky=tk.W)
 
         self.color_mode_var = tk.StringVar()
         self.color_mode_var.set('colorize')
         self.color_mode_colorize = ttk.Radiobutton(self, text='Colorize', variable=self.color_mode_var, value='colorize')
         self.color_mode_colorize.grid(column=0, row=7, sticky=tk.W)
+        self.colorize_tooltip = CreateToolTip.CreateToolTip(self.color_mode_colorize, 'Converts every color in the image to a relative shade of the new color')
         self.color_mode_average = ttk.Radiobutton(self, text='Average', variable=self.color_mode_var, value='average')
         self.color_mode_average.grid(column=0, row=8, sticky=tk.W)
+        self.average_tooltip = CreateToolTip.CreateToolTip(self.color_mode_average, 'Blends to the average of the original color and the new color')
 
         # Process Images
         self.process_images = ttk.Button(self, text='Process Images', command=self.process_image_files, width = 20)
@@ -111,7 +121,7 @@ class MainWindow(tk.Frame):
         self.add_color_button = ttk.Button(self, text='Add Color', command=self.add_color)
         self.add_color_button.grid(column=6, row=10)
 
-        self.rename_color_button = ttk.Button(self, text='Rename Color', command=lambda: self.rename_color(event=None))
+        self.rename_color_button = ttk.Button(self, text='Rename Color', command=self.rename_color)
         self.rename_color_button.grid(column=7, row=10)
 
     def browse_original(self):
@@ -190,7 +200,7 @@ class MainWindow(tk.Frame):
             self.colors.append(new_value)
             self.color_table.insert(parent='', index='end', values=new_value)
 
-    def rename_color(self, event):
+    def rename_color(self, event=None):
         if self.color_table.selection() != (): # Make sure the user hasn't selected nothing, otherwise an error will be thrown
             selected_entry = self.color_table.selection()[0] # Get the selection the user has chosen
             selected_index = self.color_table.index(selected_entry) # Get that selection's index number
@@ -208,3 +218,6 @@ class MainWindow(tk.Frame):
             win_width, win_height = window.winfo_width(), window.winfo_height()
             main_x, main_y = self.master.winfo_x(), self.master.winfo_y()
             window.geometry('%dx%d+%d+%d' % (win_width, win_height, main_x + 300, main_y + 100))
+
+            # Focus the popup
+            window.focus_force()
