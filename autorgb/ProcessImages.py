@@ -4,7 +4,7 @@ from PIL import Image
 import os
 
 class ProcessImages():
-    def __init__(self, master, original_type, original_path, destination_path, output_format, color_mode, color_list, progress_bar, progress_label):
+    def __init__(self, master, original_type, original_path, destination_path, output_format, color_mode, color_list, progress_bar, progress_label, organize):
         # Expose needed variables to all functions in the class
         self.master = master
         self.original_type = original_type
@@ -15,6 +15,7 @@ class ProcessImages():
         self.color_list = color_list
         self.progress_bar = progress_bar
         self.progress_label = progress_label
+        self.organize = organize
 
         self.progress_bar.set(0.0)
         self.number_of_images = 0
@@ -36,12 +37,15 @@ class ProcessImages():
                     # Set path to current working file
                     path = os.path.join(self.original_path, file)
 
-                    # Create a directory to send new files to
-                    folder_name = file[:-4] # Strip the .png off the end of the file name
-                    destination = self.destination_path + '/' + folder_name
-                    # If the folder doesn't exist yet, create it
-                    if not os.path.exists(destination):
-                        os.mkdir(destination)
+                    if self.organize == 'file':
+                        # Create a directory to send new files to
+                        folder_name = file[:-4] # Strip the .png off the end of the file name
+                        destination = self.destination_path + '/' + folder_name
+                        # If the folder doesn't exist yet, create it
+                        if not os.path.exists(destination):
+                            os.mkdir(destination)
+                    else:
+                        destination = self.destination_path
 
                     # Process those files!
                     self.process_file(path, destination)
@@ -69,11 +73,18 @@ class ProcessImages():
             output_name = output_name.replace('%r', str(value[1])) # Replace %r with the red value
             output_name = output_name.replace('%g', str(value[2])) # Replace %g with the green value
             output_name = output_name.replace('%b', str(value[3])) # Replace %b with the blue value
+            output_name = output_name.replace('%o', os.path.basename(file)[:-4]) # Repalce %o with original file name - .png
             output_name = output_name + '.png' # Add the .png suffix
 
-            # Output the file
-            output = os.path.join(destination, output_name)
-            self.save_image(new, output)
+            if self.organize == 'color':
+                # Output the file and organize according to color
+                sorted = destination + '/' + value[0]
+                if not os.path.exists(sorted):
+                    os.mkdir(sorted)
+                new_output = os.path.join(sorted, output_name)
+            else:
+                new_output = os.path.join(destination, output_name)
+            self.save_image(new, new_output)
 
             # Update progress
             self.total_processed += 1

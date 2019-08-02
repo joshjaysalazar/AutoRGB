@@ -55,7 +55,7 @@ class MainWindow(tk.Frame):
         self.output_label.grid(column=0, row=4, columnspan=4, sticky=tk.W)
 
         self.output_var = tk.StringVar()
-        self.output_var.set('Image%n_%c')
+        self.output_var.set('%o_%c')
         self.output_entry = ttk.Entry(self, textvariable=self.output_var)
         self.output_entry.grid(column=0, row=5, columnspan=3, sticky=tk.W+tk.E)
 
@@ -64,40 +64,52 @@ class MainWindow(tk.Frame):
                                                           '%c = Name of Color\n'
                                                           '%r = Red Value\n'
                                                           '%g = Green Value\n'
-                                                          '%b = Blue Value')
+                                                          '%b = Blue Value\n'
+                                                          '%o = Original File Name')
 
         self.output_suffix = tk.Label(self, text='.png')
         self.output_suffix.grid(column=3, row=5, sticky=tk.E)
 
+        # Organize By
+        self.organize_label = tk.Label(self, text='Organize by:')
+        self.organize_label.grid(column=0, row=6, sticky=tk.W, pady=5)
+
+        self.organize_by_var = tk.StringVar()
+        self.organize_by_var.set('file')
+        self.organize_by_file = ttk.Radiobutton(self, text='File', variable=self.organize_by_var, value='file')
+        self.organize_by_file.grid(column=1, row=6, sticky=tk.W)
+        self.organize_by_color = ttk.Radiobutton(self, text='Color', variable=self.organize_by_var, value='color')
+        self.organize_by_color.grid(column=2, row=6, sticky=tk.W)
+
         # Color Mode
         self.color_mode_label = tk.Label(self, text='Color Mode')
-        self.color_mode_label.grid(column=0, row=6, sticky=tk.W)
+        self.color_mode_label.grid(column=0, row=7, sticky=tk.W)
 
         self.color_mode_var = tk.StringVar()
         self.color_mode_var.set('colorize')
         self.color_mode_colorize = ttk.Radiobutton(self, text='Colorize', variable=self.color_mode_var, value='colorize')
-        self.color_mode_colorize.grid(column=0, row=7, sticky=tk.W)
+        self.color_mode_colorize.grid(column=0, row=8, sticky=tk.W)
         self.colorize_tooltip = CreateToolTip.CreateToolTip(self.color_mode_colorize, 'Converts every color in the image to a relative shade of the new color')
         self.color_mode_average = ttk.Radiobutton(self, text='Average', variable=self.color_mode_var, value='average')
-        self.color_mode_average.grid(column=0, row=8, sticky=tk.W)
+        self.color_mode_average.grid(column=0, row=9, sticky=tk.W)
         self.average_tooltip = CreateToolTip.CreateToolTip(self.color_mode_average, 'Blends to the average of the original color and the new color')
 
         # Process Images
         self.process_images = ttk.Button(self, text='Process Images', command=self.process_image_files, width = 20)
-        self.process_images.grid(column=1, row=6, columnspan=3, rowspan=3, sticky=tk.E+tk.N+tk.S, padx=(10, 0), pady=(10,0))
+        self.process_images.grid(column=1, row=7, columnspan=3, rowspan=3, sticky=tk.E+tk.N+tk.S, padx=(10, 0), pady=(10,0))
 
         # Progress Bar
         self.progress_label = tk.Label(self, text='Ready.')
-        self.progress_label.grid(column=0, row=9, columnspan=4, sticky=tk.W)
+        self.progress_label.grid(column=0, row=10, columnspan=4, sticky=tk.W)
 
         self.progress_var = tk.DoubleVar() # Assume that total number of images will be converted to percentage
         self.progress_var.set(0)
         self.progress_bar = ttk.Progressbar(self, variable=self.progress_var)
-        self.progress_bar.grid(column=0, row=10, columnspan=4, sticky=tk.E+tk.W)
+        self.progress_bar.grid(column=0, row=11, columnspan=4, sticky=tk.E+tk.W)
 
         # Color Table (Starts at column 4)
         self.color_table = ttk.Treeview(self, columns=('Name', 'R', 'G', 'B'), displaycolumns='#all')
-        self.color_table.grid(column=4, row=0, rowspan=9, columnspan=5, padx=10)
+        self.color_table.grid(column=4, row=0, rowspan=10, columnspan=5, padx=10)
         self.color_table.bind('<Double-1>', self.rename_color)
 
         self.color_table.heading('Name', text='Name', anchor=tk.W)
@@ -113,19 +125,19 @@ class MainWindow(tk.Frame):
 
         # Preset Buttons
         self.load_preset_button = ttk.Button(self, text='Load Preset', command=self.load_preset_file)
-        self.load_preset_button.grid(column=4, row=10, padx=(10,0))
+        self.load_preset_button.grid(column=4, row=11, padx=(10,0))
 
         self.save_preset_button = ttk.Button(self, text='Save Preset', command=self.save_preset_file)
-        self.save_preset_button.grid(column=5, row=10)
+        self.save_preset_button.grid(column=5, row=11)
 
         self.add_color_button = ttk.Button(self, text='Add Color', command=self.add_color)
-        self.add_color_button.grid(column=6, row=10)
+        self.add_color_button.grid(column=6, row=11)
 
         self.remove_color_button = ttk.Button(self, text='Remove Color', command=self.remove_color)
-        self.remove_color_button.grid(column=7, row=10)
+        self.remove_color_button.grid(column=7, row=11)
 
         self.rename_color_button = ttk.Button(self, text='Rename Color', command=self.rename_color)
-        self.rename_color_button.grid(column=8, row=10, padx=(0, 10))
+        self.rename_color_button.grid(column=8, row=11, padx=(0, 10))
 
     def browse_original(self):
         if self.original_type_var.get() == 'file':
@@ -184,9 +196,10 @@ class MainWindow(tk.Frame):
         color_list = self.colors
         progress_bar = self.progress_var
         progress_label = self.progress_label
+        organize = self.organize_by_var.get()
 
         # Convert!
-        new_images = ProcessImages.ProcessImages(master, original_type, original_path, destination_path, output_format, color_mode, color_list, progress_bar, progress_label)
+        new_images = ProcessImages.ProcessImages(master, original_type, original_path, destination_path, output_format, color_mode, color_list, progress_bar, progress_label, organize)
         del new_images
 
     def add_color(self):
