@@ -109,7 +109,7 @@ class MainWindow(tk.Frame):
 
         # Color Table (Starts at column 4)
         self.color_table = ttk.Treeview(self, columns=('Name', 'R', 'G', 'B'), displaycolumns='#all')
-        self.color_table.grid(column=4, row=0, rowspan=10, columnspan=5, padx=10)
+        self.color_table.grid(column=4, row=0, rowspan=10, columnspan=6, padx=10)
         self.color_table.bind('<Double-1>', self.rename_color)
 
         self.color_table.heading('Name', text='Name', anchor=tk.W)
@@ -118,7 +118,7 @@ class MainWindow(tk.Frame):
         self.color_table.heading('B', text='B')
 
         self.color_table.column('#0', width=50)
-        self.color_table.column('Name', width=250)
+        self.color_table.column('Name', width=300)
         self.color_table.column('R', width=50)
         self.color_table.column('G', width=50)
         self.color_table.column('B', width=50)
@@ -133,11 +133,14 @@ class MainWindow(tk.Frame):
         self.add_color_button = ttk.Button(self, text='Add Color', command=self.add_color)
         self.add_color_button.grid(column=6, row=11)
 
+        self.edit_color_button = ttk.Button(self, text='Edit Color', command=self.edit_color)
+        self.edit_color_button.grid(column=7, row=11)
+
         self.remove_color_button = ttk.Button(self, text='Remove Color', command=self.remove_color)
-        self.remove_color_button.grid(column=7, row=11)
+        self.remove_color_button.grid(column=8, row=11)
 
         self.rename_color_button = ttk.Button(self, text='Rename Color', command=self.rename_color)
-        self.rename_color_button.grid(column=8, row=11, padx=(0, 10))
+        self.rename_color_button.grid(column=9, row=11, padx=(0, 10))
 
     def browse_original(self):
         if self.original_type_var.get() == 'file':
@@ -215,6 +218,24 @@ class MainWindow(tk.Frame):
             new_value = [name, r, g, b]
             self.colors.append(new_value)
             self.color_table.insert(parent='', index='end', values=new_value)
+
+    def edit_color(self):
+        if self.color_table.selection() != (): # Make sure the user hasn't selected nothing, otherwise an error will be thrown
+            selected_entry = self.color_table.selection()[0] # Get the selection the user has chosen
+            selected_index = self.color_table.index(selected_entry) # Get that selection's index number
+
+            # Bring up color chooser window
+            new_color = colorchooser.askcolor()
+
+            # If the user didn't click cancel, edit the color in self.colors and in self.color_table
+            if new_color != (None, None):
+                # Extract the default name and color values into their own variables
+                name, r, g, b = new_color[1], int(new_color[0][0]), int(new_color[0][1]), int(new_color[0][2])
+
+                # Create the revised list item and edit self.colors and self.color_table
+                new_value = [name, r, g, b]
+                self.colors[selected_index] = new_value
+                self.color_table.item(selected_entry, values=new_value)
 
     def remove_color(self):
         if self.color_table.selection() != (): # Make sure the user hasn't selected nothing, otherwise an error will be thrown
