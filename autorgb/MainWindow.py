@@ -82,35 +82,44 @@ class MainWindow(tk.Frame):
         self.organize_by_color = ttk.Radiobutton(self, text='Color', variable=self.organize_by_var, value='color')
         self.organize_by_color.grid(column=2, row=6, sticky=tk.W)
 
+        # White Threshold
+        self.white_thresh_label = tk.Label(self, text="White Threshold")
+        self.white_thresh_label.grid(column=0, row=7, stick=tk.W)
+
+        self.white_thresh_var = tk.IntVar()
+        self.white_thresh_var.set(0)
+        self.white_thresh_slider = tk.Scale(self, length=200, orient=tk.HORIZONTAL, variable=self.white_thresh_var, from_=0, to=255, resolution=1)
+        self.white_thresh_slider.grid(column=0, row=8, columnspan=4, sticky=tk.W)
+
         # Color Mode
         self.color_mode_label = tk.Label(self, text='Color Mode')
-        self.color_mode_label.grid(column=0, row=7, sticky=tk.W)
+        self.color_mode_label.grid(column=0, row=9, sticky=tk.W)
 
         self.color_mode_var = tk.StringVar()
         self.color_mode_var.set('colorize')
         self.color_mode_colorize = ttk.Radiobutton(self, text='Colorize', variable=self.color_mode_var, value='colorize')
-        self.color_mode_colorize.grid(column=0, row=8, sticky=tk.W)
+        self.color_mode_colorize.grid(column=0, row=10, sticky=tk.W)
         self.colorize_tooltip = CreateToolTip.CreateToolTip(self.color_mode_colorize, 'Converts every color in the image to a relative shade of the new color')
         self.color_mode_average = ttk.Radiobutton(self, text='Average', variable=self.color_mode_var, value='average')
-        self.color_mode_average.grid(column=0, row=9, sticky=tk.W)
+        self.color_mode_average.grid(column=0, row=11, sticky=tk.W)
         self.average_tooltip = CreateToolTip.CreateToolTip(self.color_mode_average, 'Blends to the average of the original color and the new color')
 
         # Process Images
         self.process_images = ttk.Button(self, text='Process Images', command=self.process_image_files, width = 20)
-        self.process_images.grid(column=1, row=7, columnspan=3, rowspan=3, sticky=tk.E+tk.N+tk.S, padx=(10, 0), pady=(10,0))
+        self.process_images.grid(column=1, row=9, columnspan=3, rowspan=3, sticky=tk.E+tk.N+tk.S, padx=(10, 0), pady=(10,0))
 
         # Progress Bar
         self.progress_label = tk.Label(self, text='Ready.')
-        self.progress_label.grid(column=0, row=10, columnspan=4, sticky=tk.W)
+        self.progress_label.grid(column=0, row=12, columnspan=4, sticky=tk.W)
 
         self.progress_var = tk.DoubleVar() # Assume that total number of images will be converted to percentage
         self.progress_var.set(0)
         self.progress_bar = ttk.Progressbar(self, variable=self.progress_var)
-        self.progress_bar.grid(column=0, row=11, columnspan=4, sticky=tk.E+tk.W)
+        self.progress_bar.grid(column=0, row=13, columnspan=4, sticky=tk.E+tk.W)
 
         # Color Table (Starts at column 4)
         self.color_table = ttk.Treeview(self, columns=('Name', 'R', 'G', 'B', 'H', 'S', 'V'), displaycolumns='#all', show='headings')
-        self.color_table.grid(column=4, row=0, rowspan=10, columnspan=6, padx=10)
+        self.color_table.grid(column=4, row=0, rowspan=12, columnspan=6, padx=10)
         self.color_table.bind('<Double-1>', self.edit_color)
 
         self.color_table.heading('Name', text='Name', anchor=tk.W)
@@ -132,22 +141,22 @@ class MainWindow(tk.Frame):
 
         # Preset Buttons
         self.load_preset_button = ttk.Button(self, text='Load Preset', command=self.load_preset_file)
-        self.load_preset_button.grid(column=4, row=11, padx=(10,0))
+        self.load_preset_button.grid(column=4, row=13, padx=(10,0))
 
         self.save_preset_button = ttk.Button(self, text='Save Preset', command=self.save_preset_file)
-        self.save_preset_button.grid(column=5, row=11)
+        self.save_preset_button.grid(column=5, row=13)
 
         self.add_color_button = ttk.Button(self, text='Add Color', command=self.add_color)
-        self.add_color_button.grid(column=6, row=11)
+        self.add_color_button.grid(column=6, row=13)
 
         self.edit_color_button = ttk.Button(self, text='Edit Color', command=self.edit_color)
-        self.edit_color_button.grid(column=7, row=11)
+        self.edit_color_button.grid(column=7, row=13)
 
         self.remove_color_button = ttk.Button(self, text='Remove Color', command=self.remove_color)
-        self.remove_color_button.grid(column=8, row=11)
+        self.remove_color_button.grid(column=8, row=13)
 
         self.rename_color_button = ttk.Button(self, text='Rename Color', command=self.rename_color)
-        self.rename_color_button.grid(column=9, row=11, padx=(0, 10))
+        self.rename_color_button.grid(column=9, row=13, padx=(0, 10))
 
     def browse_original(self):
         if self.original_type_var.get() == 'file':
