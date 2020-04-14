@@ -109,9 +109,9 @@ class MainWindow(tk.Frame):
         self.progress_bar.grid(column=0, row=11, columnspan=4, sticky=tk.E+tk.W)
 
         # Color Table (Starts at column 4)
-        self.color_table = ttk.Treeview(self, columns=('Name', 'R', 'G', 'B', 'H', 'S', 'V'), displaycolumns='#all')
+        self.color_table = ttk.Treeview(self, columns=('Name', 'R', 'G', 'B', 'H', 'S', 'V'), displaycolumns='#all', show='headings')
         self.color_table.grid(column=4, row=0, rowspan=10, columnspan=6, padx=10)
-        self.color_table.bind('<Double-1>', self.rename_color)
+        self.color_table.bind('<Double-1>', self.edit_color)
 
         self.color_table.heading('Name', text='Name', anchor=tk.W)
         self.color_table.heading('R', text='R')
@@ -230,7 +230,7 @@ class MainWindow(tk.Frame):
             self.colors.append(new_value)
             self.color_table.insert(parent='', index='end', values=new_value)
 
-    def edit_color(self):
+    def edit_color(self, event=None):
         if self.color_table.selection() != (): # Make sure the user hasn't selected nothing, otherwise an error will be thrown
             selected_entry = self.color_table.selection()[0] # Get the selection the user has chosen
             selected_index = self.color_table.index(selected_entry) # Get that selection's index number
