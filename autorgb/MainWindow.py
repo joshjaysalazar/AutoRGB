@@ -3,6 +3,7 @@ from tkinter import ttk
 from tkinter import filedialog
 from tkinter import colorchooser
 import json
+import colorsys
 
 import RenameWindow
 import ProcessImages
@@ -108,7 +109,7 @@ class MainWindow(tk.Frame):
         self.progress_bar.grid(column=0, row=11, columnspan=4, sticky=tk.E+tk.W)
 
         # Color Table (Starts at column 4)
-        self.color_table = ttk.Treeview(self, columns=('Name', 'R', 'G', 'B'), displaycolumns='#all')
+        self.color_table = ttk.Treeview(self, columns=('Name', 'R', 'G', 'B', 'H', 'S', 'V'), displaycolumns='#all')
         self.color_table.grid(column=4, row=0, rowspan=10, columnspan=6, padx=10)
         self.color_table.bind('<Double-1>', self.rename_color)
 
@@ -116,12 +117,18 @@ class MainWindow(tk.Frame):
         self.color_table.heading('R', text='R')
         self.color_table.heading('G', text='G')
         self.color_table.heading('B', text='B')
+        self.color_table.heading('H', text='H')
+        self.color_table.heading('S', text='S')
+        self.color_table.heading('V', text='V')
 
         self.color_table.column('#0', width=50)
-        self.color_table.column('Name', width=300)
+        self.color_table.column('Name', width=200)
         self.color_table.column('R', width=50)
         self.color_table.column('G', width=50)
         self.color_table.column('B', width=50)
+        self.color_table.column('H', width=50)
+        self.color_table.column('S', width=50)
+        self.color_table.column('V', width=50)
 
         # Preset Buttons
         self.load_preset_button = ttk.Button(self, text='Load Preset', command=self.load_preset_file)
@@ -167,10 +174,8 @@ class MainWindow(tk.Frame):
         # Loop through every color in the file & convert each to a list item in self.colors
         for color in data:
             new_value = []
-            new_value.append(color[0])
-            new_value.append(color[1])
-            new_value.append(color[2])
-            new_value.append(color[3])
+            for i in range(7): # Number of values per color in a preset
+                new_value.append(color[i])
             self.colors.append(new_value)
 
         # Clear the color table
@@ -214,8 +219,14 @@ class MainWindow(tk.Frame):
             # Extract the default name and color values into their own variables
             name, r, g, b = new_color[1], int(new_color[0][0]), int(new_color[0][1]), int(new_color[0][2])
 
+            # Get HSV values based on RGB values
+            h, s, v = colorsys.rgb_to_hsv(r/255., g/255., b/255.)
+            h = int(h * 255.9999)
+            s = int(s * 255.9999)
+            v = int(v * 255.9999)
+
             # Create the new list item and add it to self.colors and self.color_table
-            new_value = [name, r, g, b]
+            new_value = [name, r, g, b, h, s, v]
             self.colors.append(new_value)
             self.color_table.insert(parent='', index='end', values=new_value)
 
@@ -232,8 +243,14 @@ class MainWindow(tk.Frame):
                 # Extract the default name and color values into their own variables
                 name, r, g, b = new_color[1], int(new_color[0][0]), int(new_color[0][1]), int(new_color[0][2])
 
+                # Get HSV values based on RGB values, set them to 0-255 scale
+                h, s, v = colorsys.rgb_to_hsv(r/255., g/255., b/255.)
+                h = int(h * 255.9999)
+                s = int(s * 255.9999)
+                v = int(v * 255.9999)
+
                 # Create the revised list item and edit self.colors and self.color_table
-                new_value = [name, r, g, b]
+                new_value = [name, r, g, b, h, s, v]
                 self.colors[selected_index] = new_value
                 self.color_table.item(selected_entry, values=new_value)
 
