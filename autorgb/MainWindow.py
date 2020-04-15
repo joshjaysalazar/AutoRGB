@@ -86,10 +86,14 @@ class MainWindow(tk.Frame):
         self.white_thresh_label = tk.Label(self, text="White Threshold")
         self.white_thresh_label.grid(column=0, row=7, stick=tk.W)
 
-        self.white_thresh_var = tk.IntVar()
+        self.white_thresh_var = tk.StringVar()
         self.white_thresh_var.set(0)
-        self.white_thresh_slider = tk.Scale(self, length=200, orient=tk.HORIZONTAL, variable=self.white_thresh_var, from_=0, to=255, resolution=1)
-        self.white_thresh_slider.grid(column=0, row=8, columnspan=4, sticky=tk.W)
+        self.white_thresh_slider = ttk.Scale(self, length=180, orient=tk.HORIZONTAL, variable=self.white_thresh_var, from_=0, to=255,
+            command=lambda s:self.white_thresh_var.set('%d' % float(s))) # Sets the output to an integer
+        self.white_thresh_slider.grid(column=0, row=8, columnspan=3, sticky=tk.W)
+
+        self.white_thresh_entry = ttk.Entry(self, textvariable=self.white_thresh_var, width=5)
+        self.white_thresh_entry.grid(column=3, row=8, sticky=tk.W)
 
         # Color Mode
         self.color_mode_label = tk.Label(self, text='Color Mode')
@@ -209,6 +213,7 @@ class MainWindow(tk.Frame):
         original_path = self.original_var.get()
         destination_path = self.destination_var.get()
         output_format = self.output_var.get()
+        white_thresh = int(self.white_thresh_var.get())
         color_mode = self.color_mode_var.get()
         color_list = self.colors
         progress_bar = self.progress_var
@@ -216,7 +221,7 @@ class MainWindow(tk.Frame):
         organize = self.organize_by_var.get()
 
         # Convert!
-        new_images = ProcessImages.ProcessImages(master, original_type, original_path, destination_path, output_format, color_mode, color_list, progress_bar, progress_label, organize)
+        new_images = ProcessImages.ProcessImages(master, original_type, original_path, destination_path, output_format, white_thresh, color_mode, color_list, progress_bar, progress_label, organize)
         del new_images
 
     def add_color(self):

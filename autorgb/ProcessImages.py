@@ -4,13 +4,14 @@ from PIL import Image
 import os
 
 class ProcessImages():
-    def __init__(self, master, original_type, original_path, destination_path, output_format, color_mode, color_list, progress_bar, progress_label, organize):
+    def __init__(self, master, original_type, original_path, destination_path, output_format, white_thresh, color_mode, color_list, progress_bar, progress_label, organize):
         # Expose needed variables to all functions in the class
         self.master = master
         self.original_type = original_type
         self.original_path = original_path
         self.destination_path = destination_path
         self.output_format = output_format
+        self.white_thresh = white_thresh / 255.
         self.color_mode = color_mode
         self.color_list = color_list
         self.progress_bar = progress_bar
@@ -20,6 +21,8 @@ class ProcessImages():
         self.progress_bar.set(0.0)
         self.number_of_images = 0
         self.total_processed = 0
+
+        print(self.white_thresh)
 
         if self.original_type == 'file':
             self.number_of_images = 1 # set number of images to 1
@@ -167,10 +170,11 @@ class ProcessImages():
 
                 # Convert each value to the value in the list
                 if self.color_mode == 'colorize':
-                    # Shift the colors
-                    h = h_adjust
-                    s = s * s_adjust
-                    v = v * v_adjust
+                    # Shift the colors if above the white threshold
+                    if s >= self.white_thresh and v >= ((self.white_thresh - 1.) * -1.):
+                        h = h_adjust
+                        s = s * s_adjust
+                        v = v * v_adjust
                 elif self.color_mode == 'average':
                     h = (h + h_adjust) / 2
 
