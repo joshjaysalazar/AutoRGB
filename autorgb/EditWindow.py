@@ -110,7 +110,7 @@ class EditWindow(tk.Frame):
         self.hue_var = tk.StringVar()
         self.hue_var.set(self.current_hue)
         self.hue_slider = ttk.Scale(self, length=100, orient=tk.HORIZONTAL,
-            variable=self.hue_var, from_=0, to=255,
+            variable=self.hue_var, from_=0, to=359,
             command=lambda s:self.hue_var.set('%d' % float(s))) # Sets the output to an integer
         self.hue_slider.grid(column=1, row=4, sticky=tk.W, padx=(0, 10))
 
@@ -132,7 +132,7 @@ class EditWindow(tk.Frame):
         self.saturation_var = tk.StringVar()
         self.saturation_var.set(self.current_saturation)
         self.saturation_slider = ttk.Scale(self, length=100, orient=tk.HORIZONTAL,
-            variable=self.saturation_var, from_=0, to=255,
+            variable=self.saturation_var, from_=0, to=100,
             command=lambda s:self.saturation_var.set('%d' % float(s))) # Sets the output to an integer
         self.saturation_slider.grid(column=1, row=5, sticky=tk.W, padx=(0, 10))
 
@@ -154,7 +154,7 @@ class EditWindow(tk.Frame):
         self.value_var = tk.StringVar()
         self.value_var.set(self.current_value)
         self.value_slider = ttk.Scale(self, length=100, orient=tk.HORIZONTAL,
-            variable=self.value_var, from_=0, to=255,
+            variable=self.value_var, from_=0, to=100,
             command=lambda s:self.value_var.set('%d' % float(s))) # Sets the output to an integer
         self.value_slider.grid(column=1, row=6, sticky=tk.W, padx=(0, 10))
 
@@ -191,9 +191,9 @@ class EditWindow(tk.Frame):
         # If RGB changed, recalculate HSV
         if active == 'r' or active == 'g' or active == 'b':
             h, s, v = colorsys.rgb_to_hsv(r/255., g/255., b/255.)
-            h = int(h * 255.)
-            s = int(s * 255.)
-            v = int(v * 255.)
+            h = int(h * 359.)
+            s = int(s * 100.)
+            v = int(v * 100.)
 
             # Set the HSV sliders
             self.hue_var.set(h)
@@ -202,7 +202,7 @@ class EditWindow(tk.Frame):
 
         # If HSV changed, recalculate RGB
         if active == 'h' or active == 's' or active == 'v':
-            r, g, b = colorsys.hsv_to_rgb(h/255., s/255., v/255.)
+            r, g, b = colorsys.hsv_to_rgb(h/359., s/100., v/100.)
             r = int(r * 255.)
             g = int(g * 255.)
             b = int(b * 255.)

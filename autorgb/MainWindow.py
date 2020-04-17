@@ -88,7 +88,7 @@ class MainWindow(tk.Frame):
 
         self.white_thresh_var = tk.StringVar()
         self.white_thresh_var.set(0)
-        self.white_thresh_slider = ttk.Scale(self, length=180, orient=tk.HORIZONTAL, variable=self.white_thresh_var, from_=0, to=255,
+        self.white_thresh_slider = ttk.Scale(self, length=180, orient=tk.HORIZONTAL, variable=self.white_thresh_var, from_=0, to=100,
             command=lambda s:self.white_thresh_var.set('%d' % float(s))) # Sets the output to an integer
         self.white_thresh_slider.grid(column=0, row=8, columnspan=3, sticky=tk.W)
 
@@ -196,9 +196,9 @@ class MainWindow(tk.Frame):
         for color in self.colors:
             # Calculate the HSV values to add to the table
             h, s, v = colorsys.rgb_to_hsv(int(color[1])/255., int(color[2])/255., int(color[3])/255.)
-            h = int(h * 255.)
-            s = int(s * 255.)
-            v = int(v * 255.)
+            h = int(h * 359.)
+            s = int(s * 100.)
+            v = int(v * 100.)
 
             # Append them to the list of values
             color.append(h)

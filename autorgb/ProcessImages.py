@@ -11,18 +11,18 @@ class ProcessImages():
         self.original_path = original_path
         self.destination_path = destination_path
         self.output_format = output_format
-        self.white_thresh = white_thresh / 255.
+        self.white_thresh = white_thresh / 100.
         self.color_mode = color_mode
         self.color_list = color_list
         self.progress_bar = progress_bar
         self.progress_label = progress_label
         self.organize = organize
 
+        print('White Threshold ', self.white_thresh)
+
         self.progress_bar.set(0.0)
         self.number_of_images = 0
         self.total_processed = 0
-
-        print(self.white_thresh)
 
         if self.original_type == 'file':
             self.number_of_images = 1 # set number of images to 1
@@ -171,7 +171,9 @@ class ProcessImages():
                 # Convert each value to the value in the list
                 if self.color_mode == 'colorize':
                     # Shift the colors if above the white threshold
-                    if s >= self.white_thresh and v >= ((self.white_thresh - 1.) * -1.):
+                    if s <= self.white_thresh and v >= (1. - self.white_thresh):
+                        pass
+                    else:
                         h = h_adjust
                         s = s * s_adjust
                         v = v * v_adjust
