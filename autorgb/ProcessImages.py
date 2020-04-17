@@ -163,7 +163,7 @@ class ProcessImages():
                     a = 255
 
                 # Convert RGB adjust to HSV adjust
-                h_adjust, s_adjust, v_adjust = colorsys.rgb_to_hsv(r_adjust/255., g_adjust/255., b_adjust/255.)
+                h_adjust, s_adjust, v_adjust = colorsys.rgb_to_hsv(float(r_adjust)/255., float(g_adjust)/255., float(b_adjust)/255.)
 
                 # Convert to HSV space
                 h, s, v = colorsys.rgb_to_hsv(r/255., g/255., b/255.)
