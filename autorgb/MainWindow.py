@@ -5,7 +5,7 @@ from tkinter import colorchooser
 import json
 import colorsys
 
-import RenameWindow
+import EditWindow
 import ProcessImages
 import CreateToolTip
 
@@ -122,8 +122,8 @@ class MainWindow(tk.Frame):
         self.progress_bar.grid(column=0, row=13, columnspan=4, sticky=tk.E+tk.W)
 
         # Color Table (Starts at column 4)
-        self.color_table = ttk.Treeview(self, columns=('Name', 'R', 'G', 'B', 'H', 'S', 'V'), displaycolumns='#all', show='headings')
-        self.color_table.grid(column=4, row=0, rowspan=12, columnspan=6, padx=10)
+        self.color_table = ttk.Treeview(self, columns=('Name', 'R', 'G', 'B', 'H', 'S', 'V'), displaycolumns='#all', show='headings', height=12)
+        self.color_table.grid(column=4, row=0, rowspan=12, columnspan=5, padx=10)
         self.color_table.bind('<Double-1>', self.edit_color)
 
         self.color_table.heading('Name', text='Name', anchor=tk.W)
@@ -157,10 +157,7 @@ class MainWindow(tk.Frame):
         self.edit_color_button.grid(column=7, row=13)
 
         self.remove_color_button = ttk.Button(self, text='Remove Color', command=self.remove_color)
-        self.remove_color_button.grid(column=8, row=13)
-
-        self.rename_color_button = ttk.Button(self, text='Rename Color', command=self.rename_color)
-        self.rename_color_button.grid(column=9, row=13, padx=(0, 10))
+        self.remove_color_button.grid(column=8, row=13, padx=(0, 10))
 
     def browse_original(self):
         if self.original_type_var.get() == 'file':
@@ -187,7 +184,7 @@ class MainWindow(tk.Frame):
         # Loop through every color in the file & convert each to a list item in self.colors
         for color in data:
             new_value = []
-            for i in range(7): # Number of values per color in a preset
+            for i in range(4): # Number of values per color in a preset
                 new_value.append(color[i])
             self.colors.append(new_value)
 
@@ -197,6 +194,18 @@ class MainWindow(tk.Frame):
 
         # Add each color to the color table
         for color in self.colors:
+            # Calculate the HSV values to add to the table
+            h, s, v = colorsys.rgb_to_hsv(int(color[1])/255., int(color[2])/255., int(color[3])/255.)
+            h = int(h * 255.)
+            s = int(s * 255.)
+            v = int(v * 255.)
+
+            # Append them to the list of values
+            color.append(h)
+            color.append(s)
+            color.append(v)
+
+            # Fill in a new entry in the table
             self.color_table.insert(parent='', index='end', values=color)
 
     def save_preset_file(self):
@@ -224,70 +233,26 @@ class MainWindow(tk.Frame):
         new_images = ProcessImages.ProcessImages(master, original_type, original_path, destination_path, output_format, white_thresh, color_mode, color_list, progress_bar, progress_label, organize)
         del new_images
 
-    def add_color(self):
-        # Bring up color chooser window
-        new_color = colorchooser.askcolor()
+    def add_color(self, event=None):
+        # Add a blank new color & select it
+        new_value = ['New Color', 0, 0, 0, 0, 0, 0]
+        self.colors.append(new_value[:4])
+        self.color_table.selection_set(self.color_table.insert(parent='', index='end', values=new_value))
 
-        # If the user didn't click cancel, add the color to self.colors and to self.color_table
-        if new_color != (None, None):
-            # Extract the default name and color values into their own variables
-            name, r, g, b = new_color[1], int(new_color[0][0]), int(new_color[0][1]), int(new_color[0][2])
-
-            # Get HSV values based on RGB values
-            h, s, v = colorsys.rgb_to_hsv(r/255., g/255., b/255.)
-            h = int(h * 255.9999)
-            s = int(s * 255.9999)
-            v = int(v * 255.9999)
-
-            # Create the new list item and add it to self.colors and self.color_table
-            new_value = [name, r, g, b, h, s, v]
-            self.colors.append(new_value)
-            self.color_table.insert(parent='', index='end', values=new_value)
+        # Open the "Edit Color" window
+        self.edit_color()
 
     def edit_color(self, event=None):
         if self.color_table.selection() != (): # Make sure the user hasn't selected nothing, otherwise an error will be thrown
             selected_entry = self.color_table.selection()[0] # Get the selection the user has chosen
             selected_index = self.color_table.index(selected_entry) # Get that selection's index number
 
-            # Bring up color chooser window
-            new_color = colorchooser.askcolor()
-
-            # If the user didn't click cancel, edit the color in self.colors and in self.color_table
-            if new_color != (None, None):
-                # Extract the default name and color values into their own variables
-                name, r, g, b = new_color[1], int(new_color[0][0]), int(new_color[0][1]), int(new_color[0][2])
-
-                # Get HSV values based on RGB values, set them to 0-255 scale
-                h, s, v = colorsys.rgb_to_hsv(r/255., g/255., b/255.)
-                h = int(h * 255.9999)
-                s = int(s * 255.9999)
-                v = int(v * 255.9999)
-
-                # Create the revised list item and edit self.colors and self.color_table
-                new_value = [name, r, g, b, h, s, v]
-                self.colors[selected_index] = new_value
-                self.color_table.item(selected_entry, values=new_value)
-
-    def remove_color(self):
-        if self.color_table.selection() != (): # Make sure the user hasn't selected nothing, otherwise an error will be thrown
-            selected_entry = self.color_table.selection()[0] # Get the selection the user has chosen
-            selected_index = self.color_table.index(selected_entry) # Get that selection's index number
-
-            # Delete the value from the color table and color list
-            self.color_table.delete(selected_entry)
-            del self.colors[selected_index]
-
-    def rename_color(self, event=None):
-        if self.color_table.selection() != (): # Make sure the user hasn't selected nothing, otherwise an error will be thrown
-            selected_entry = self.color_table.selection()[0] # Get the selection the user has chosen
-            selected_index = self.color_table.index(selected_entry) # Get that selection's index number
-
-            # Bring up a dialog to rename (the RenameWindow class does the heavy lifting here)
+            # Bring up a dialog to rename (the EditWindow class does the heavy lifting here)
             window = tk.Toplevel(self)
-            window.wm_title('Rename Color')
+            window.wm_title('Edit Color')
             window.attributes("-toolwindow", 1)
 
-            frame = RenameWindow.RenameWindow(window, self.colors, self.color_table, selected_entry, selected_index)
+            frame = EditWindow.EditWindow(window, self.colors, self.color_table, selected_entry, selected_index)
             frame.grid(padx=10, pady=10)
 
             # Position the window reasonably within the main window
@@ -298,3 +263,12 @@ class MainWindow(tk.Frame):
 
             # Focus the popup
             window.focus_force()
+
+    def remove_color(self):
+        if self.color_table.selection() != (): # Make sure the user hasn't selected nothing, otherwise an error will be thrown
+            selected_entry = self.color_table.selection()[0] # Get the selection the user has chosen
+            selected_index = self.color_table.index(selected_entry) # Get that selection's index number
+
+            # Delete the value from the color table and color list
+            self.color_table.delete(selected_entry)
+            del self.colors[selected_index]
