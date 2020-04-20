@@ -183,8 +183,6 @@ class ProcessImages():
                         pass
                     else:
                         h = (h + h_adjust) / 2
-                        s = (s + s_adjust) / 2
-                        v = (v + v_adjust) / 2
 
                 # Convert back to RGB
                 r, g, b = colorsys.hsv_to_rgb(h, s, v)
