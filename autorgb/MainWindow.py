@@ -134,7 +134,6 @@ class MainWindow(tk.Frame):
         self.color_table.heading('S', text='S')
         self.color_table.heading('V', text='V')
 
-        self.color_table.column('#0', width=50)
         self.color_table.column('Name', width=200)
         self.color_table.column('R', width=50)
         self.color_table.column('G', width=50)
@@ -193,6 +192,7 @@ class MainWindow(tk.Frame):
             self.color_table.delete(color)
 
         # Add each color to the color table
+        image_index = 0
         for color in self.colors:
             # Calculate the HSV values to add to the table
             h, s, v = colorsys.rgb_to_hsv(int(color[1])/255., int(color[2])/255., int(color[3])/255.)
