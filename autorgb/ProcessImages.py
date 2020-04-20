@@ -1,6 +1,7 @@
 import sys
 import colorsys
 from PIL import Image
+from PIL import ImageOps
 import os
 
 class ProcessImages():
@@ -170,18 +171,20 @@ class ProcessImages():
 
                 # Convert each value to the value in the list
                 if self.color_mode == 'colorize':
-                    # Shift the colors if above the white threshold
-                    if s == 0:
+                    # Adjust the pixel if above the white threshold
+                    if s <= self.white_thresh and v >= (1. - self.white_thresh):
                         pass
-                    elif s <= self.white_thresh and v >= (1. - self.white_thresh):
-                        h = h_adjust
-                        v = (v + (v * v_adjust)) / 2
                     else:
                         h = h_adjust
-                        v = v * v_adjust
                         s = s * s_adjust
+                        v = v * v_adjust
                 elif self.color_mode == 'average':
-                    h = (h + h_adjust) / 2
+                    if s <= self.white_thresh and v >= (1. - self.white_thresh):
+                        pass
+                    else:
+                        h = (h + h_adjust) / 2
+                        s = (s + s_adjust) / 2
+                        v = (v + v_adjust) / 2
 
                 # Convert back to RGB
                 r, g, b = colorsys.hsv_to_rgb(h, s, v)
