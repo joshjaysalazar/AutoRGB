@@ -171,12 +171,15 @@ class ProcessImages():
                 # Convert each value to the value in the list
                 if self.color_mode == 'colorize':
                     # Shift the colors if above the white threshold
-                    if s <= self.white_thresh and v >= (1. - self.white_thresh):
+                    if s == 0:
                         pass
+                    elif s <= self.white_thresh and v >= (1. - self.white_thresh):
+                        h = h_adjust
+                        v = (v + (v * v_adjust)) / 2
                     else:
                         h = h_adjust
-                        s = s * s_adjust
                         v = v * v_adjust
+                        s = s * s_adjust
                 elif self.color_mode == 'average':
                     h = (h + h_adjust) / 2
 
