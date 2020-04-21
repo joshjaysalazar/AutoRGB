@@ -181,42 +181,42 @@ class MainWindow(tk.Frame):
             with open(target, "r") as read_file:
                 data = json.load(read_file)
 
-        # Clear self.colors to prepare for a new color list
-        self.colors = []
+            # Clear self.colors to prepare for a new color list
+            self.colors = []
 
-        # Loop through every color in the file & convert each to a list item in self.colors
-        for color in data:
-            new_value = []
-            for i in range(4): # Number of values per color in a preset
-                new_value.append(color[i])
-            self.colors.append(new_value)
+            # Loop through every color in the file & convert each to a list item in self.colors
+            for color in data:
+                new_value = []
+                for i in range(4): # Number of values per color in a preset
+                    new_value.append(color[i])
+                self.colors.append(new_value)
 
-        # Clear the color table
-        self.icons = []
-        for color in self.color_table.get_children():
-            self.color_table.delete(color)
+            # Clear the color table
+            self.icons = []
+            for color in self.color_table.get_children():
+                self.color_table.delete(color)
 
-        # Add each color to the color table
-        icon_index = 0
-        for color in self.colors:
-            # Calculate the HSV values to add to the table
-            h, s, v = colorsys.rgb_to_hsv(int(color[1])/255., int(color[2])/255., int(color[3])/255.)
-            h = int(h * 359.)
-            s = int(s * 100.)
-            v = int(v * 100.)
+            # Add each color to the color table
+            icon_index = 0
+            for color in self.colors:
+                # Calculate the HSV values to add to the table
+                h, s, v = colorsys.rgb_to_hsv(int(color[1])/255., int(color[2])/255., int(color[3])/255.)
+                h = int(h * 359.)
+                s = int(s * 100.)
+                v = int(v * 100.)
 
-            # Append them to the list of values
-            color.append(h)
-            color.append(s)
-            color.append(v)
+                # Append them to the list of values
+                color.append(h)
+                color.append(s)
+                color.append(v)
 
-            # Create color swatch
-            swatch = Image.new(mode='RGB', size=(16, 16), color=(int(color[1]), int(color[2]), int(color[3])))
-            self.icons.append(ImageTk.PhotoImage(swatch))
+                # Create color swatch
+                swatch = Image.new(mode='RGB', size=(16, 16), color=(int(color[1]), int(color[2]), int(color[3])))
+                self.icons.append(ImageTk.PhotoImage(swatch))
 
-            # Fill in a new entry in the table
-            self.color_table.insert(parent='', index='end', values=color, image=self.icons[icon_index])
-            icon_index += 1
+                # Fill in a new entry in the table
+                self.color_table.insert(parent='', index='end', values=color, image=self.icons[icon_index])
+                icon_index += 1
 
     def save_preset_file(self):
         # Create a new JSON file to save self.colors
