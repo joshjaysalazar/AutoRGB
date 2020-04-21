@@ -173,7 +173,9 @@ class ProcessImages():
                 if self.color_mode == 'colorize':
                     # Adjust the pixel if above the white threshold
                     if s <= self.white_thresh and v >= (1. - self.white_thresh):
-                        pass
+                        h = h_adjust
+                        s = s * s_adjust
+                        v = (v - v_adjust) + (s_adjust - s)
                     else:
                         h = h_adjust
                         s = s * s_adjust
