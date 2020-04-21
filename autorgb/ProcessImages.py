@@ -19,8 +19,6 @@ class ProcessImages():
         self.progress_label = progress_label
         self.organize = organize
 
-        print('White Threshold ', self.white_thresh)
-
         self.progress_bar.set(0.0)
         self.number_of_images = 0
         self.total_processed = 0
