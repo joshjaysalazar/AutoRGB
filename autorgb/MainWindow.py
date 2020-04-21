@@ -4,6 +4,8 @@ from tkinter import filedialog
 from tkinter import colorchooser
 import json
 import colorsys
+from PIL import Image
+from PIL import ImageTk
 
 import EditWindow
 import ProcessImages
@@ -16,6 +18,7 @@ class MainWindow(tk.Frame):
 
         # Create empty color table
         self.colors = []
+        self.icons = []
 
         # Give the contents of the window 15px of padding on the sides
         self.grid(row=0, padx=15, pady=15)
@@ -122,7 +125,7 @@ class MainWindow(tk.Frame):
         self.progress_bar.grid(column=0, row=13, columnspan=4, sticky=tk.E+tk.W)
 
         # Color Table (Starts at column 4)
-        self.color_table = ttk.Treeview(self, columns=('Name', 'R', 'G', 'B', 'H', 'S', 'V'), displaycolumns='#all', show='headings', height=12)
+        self.color_table = ttk.Treeview(self, columns=('Name', 'R', 'G', 'B', 'H', 'S', 'V'), displaycolumns='#all', height=12)
         self.color_table.grid(column=4, row=0, rowspan=12, columnspan=5, padx=10)
         self.color_table.bind('<Double-1>', self.edit_color)
 
@@ -134,6 +137,7 @@ class MainWindow(tk.Frame):
         self.color_table.heading('S', text='S')
         self.color_table.heading('V', text='V')
 
+        self.color_table.column('#0', width=50)
         self.color_table.column('Name', width=200)
         self.color_table.column('R', width=50)
         self.color_table.column('G', width=50)
@@ -188,11 +192,12 @@ class MainWindow(tk.Frame):
             self.colors.append(new_value)
 
         # Clear the color table
+        self.icons = []
         for color in self.color_table.get_children():
             self.color_table.delete(color)
 
         # Add each color to the color table
-        image_index = 0
+        icon_index = 0
         for color in self.colors:
             # Calculate the HSV values to add to the table
             h, s, v = colorsys.rgb_to_hsv(int(color[1])/255., int(color[2])/255., int(color[3])/255.)
@@ -205,15 +210,25 @@ class MainWindow(tk.Frame):
             color.append(s)
             color.append(v)
 
+            # Create color swatch
+            swatch = Image.new(mode='RGB', size=(16, 16), color=(int(color[1]), int(color[2]), int(color[3])))
+            self.icons.append(ImageTk.PhotoImage(swatch))
+
             # Fill in a new entry in the table
-            self.color_table.insert(parent='', index='end', values=color)
+            self.color_table.insert(parent='', index='end', values=color, image=self.icons[icon_index])
+            icon_index += 1
 
     def save_preset_file(self):
         # Create a new JSON file to save self.colors
         target = filedialog.asksaveasfilename(title='Save As...', defaultextension='.json', filetypes=(('JavaScript Object Notation (.json)','*.json'), ('All Files','*.*')))
         if target != '': # Make sure the user didn't cancel
             with open(target, "w") as write_file:
-                json.dump(self.colors, write_file, indent=2)
+                # Only save the RGB values
+                self.to_save = []
+                for color in self.colors:
+                    self.to_save.append(color[:4])
+                    print (self.to_save)
+                json.dump(self.to_save, write_file, indent=2)
 
     def process_image_files(self):
         # Gather all the data needed to run
@@ -237,6 +252,7 @@ class MainWindow(tk.Frame):
         # Add a blank new color & select it
         new_value = ['New Color', 0, 0, 0, 0, 0, 0]
         self.colors.append(new_value[:4])
+        self.icons.append(None)
         self.color_table.selection_set(self.color_table.insert(parent='', index='end', values=new_value))
 
         # Open the "Edit Color" window
@@ -252,7 +268,7 @@ class MainWindow(tk.Frame):
             window.wm_title('Edit Color')
             window.attributes("-toolwindow", 1)
 
-            frame = EditWindow.EditWindow(window, self.colors, self.color_table, selected_entry, selected_index)
+            frame = EditWindow.EditWindow(window, self.colors, self.icons, self.color_table, selected_entry, selected_index)
             frame.grid(padx=10, pady=10)
 
             # Position the window reasonably within the main window
@@ -272,3 +288,4 @@ class MainWindow(tk.Frame):
             # Delete the value from the color table and color list
             self.color_table.delete(selected_entry)
             del self.colors[selected_index]
+            del self.icons[selected_index]

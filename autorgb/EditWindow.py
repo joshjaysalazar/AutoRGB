@@ -1,18 +1,17 @@
 import tkinter as tk
 from tkinter import ttk
 import colorsys
-
-# NOTE: This entire script needs to be reworked. There need to be values in the
-# background which are actually being manipulated, and the sliders need to be
-# just for display. Otherwise, the sliders will always fight each other.
+from PIL import Image
+from PIL import ImageTk
 
 class EditWindow(tk.Frame):
-    def __init__(self, master=None, color_list=None, color_table=None, selected_entry=None, selected_index=None):
+    def __init__(self, master=None, color_list=None, icon_list=None, color_table=None, selected_entry=None, selected_index=None):
         tk.Frame.__init__(self, master)
         self.toplevel = self.winfo_toplevel()
 
         # Expose the variables from the parents class
         self.colors = color_list
+        self.icons = icon_list
         self.color_table = color_table
         self.selected_entry = selected_entry
         self.selected_index = selected_index
@@ -229,7 +228,12 @@ class EditWindow(tk.Frame):
         self.color_preview.config(bg=self.color_code)
 
     def set_and_close(self, event=None):
+        # Create color swatch
+        swatch = Image.new(mode='RGB', size=(16, 16), color=(int(self.red_var.get()), int(self.green_var.get()), int(self.blue_var.get())))
+        self.icons[self.selected_index] = ImageTk.PhotoImage(swatch)
+
         # Update the table entry
+        self.color_table.item(self.selected_entry, image=self.icons[self.selected_index])
         self.color_table.set(self.selected_entry, column='Name', value=self.rename_var.get())
         self.color_table.set(self.selected_entry, column='R', value=self.red_var.get())
         self.color_table.set(self.selected_entry, column='G', value=self.green_var.get())
