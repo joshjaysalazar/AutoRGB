@@ -227,7 +227,6 @@ class MainWindow(tk.Frame):
                 self.to_save = []
                 for color in self.colors:
                     self.to_save.append(color[:4])
-                    print (self.to_save)
                 json.dump(self.to_save, write_file, indent=2)
 
     def process_image_files(self):
