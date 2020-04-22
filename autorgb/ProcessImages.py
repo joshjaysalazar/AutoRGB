@@ -75,6 +75,9 @@ class ProcessImages():
             output_name = output_name.replace('%r', str(value[1])) # Replace %r with the red value
             output_name = output_name.replace('%g', str(value[2])) # Replace %g with the green value
             output_name = output_name.replace('%b', str(value[3])) # Replace %b with the blue value
+            output_name = output_name.replace('%h', str(value[4])) # Replace %h with the hue value
+            output_name = output_name.replace('%s', str(value[5])) # Replace %s with the saturation value
+            output_name = output_name.replace('%v', str(value[6])) # Replace %v with the value value
             output_name = output_name.replace('%o', os.path.basename(file)[:-4]) # Repalce %o with original file name - .png
             output_name = output_name + '.png' # Add the .png suffix
 

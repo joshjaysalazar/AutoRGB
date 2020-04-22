@@ -76,9 +76,12 @@ class MainWindow(tk.Frame):
         self.output_tooltip = CreateToolTip.CreateToolTip(self.output_entry, \
                                                           '%n = Image Number\n'
                                                           '%c = Name of Color\n'
-                                                          '%r = Red Value\n'
-                                                          '%g = Green Value\n'
-                                                          '%b = Blue Value\n'
+                                                          '%r = Red Setting\n'
+                                                          '%g = Green Setting\n'
+                                                          '%b = Blue Setting\n'
+                                                          '%h = Hue Setting\n'
+                                                          '%s = Saturation Setting\n'
+                                                          '%v = Value Setting\n'
                                                           '%o = Original File Name')
 
         self.output_suffix = tk.Label(self, text='.png')
