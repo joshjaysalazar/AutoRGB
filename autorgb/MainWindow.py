@@ -16,6 +16,10 @@ class MainWindow(tk.Frame):
         super().__init__(master)
         self.master = master
 
+        # Set the window icon
+        self.window_icon = ImageTk.PhotoImage(file='icon.ico')
+        self.master.iconphoto(True, self.window_icon)
+
         # Create empty color table
         self.colors = []
         self.icons = []
