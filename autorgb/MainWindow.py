@@ -6,6 +6,7 @@ import json
 import colorsys
 from PIL import Image
 from PIL import ImageTk
+import os
 
 import EditWindow
 import ProcessImages
@@ -23,6 +24,11 @@ class MainWindow(tk.Frame):
         # Create empty color table
         self.colors = []
         self.icons = []
+
+        # Set the default directories for browse functions
+        self.default_presets = 'presets'
+        self.default_open = 'sample_images'
+        self.default_save = 'sample_images'
 
         # Give the contents of the window 15px of padding on the sides
         self.grid(row=0, padx=15, pady=15)
@@ -168,21 +174,26 @@ class MainWindow(tk.Frame):
 
     def browse_original(self):
         if self.original_type_var.get() == 'file':
-            target = filedialog.askopenfilename(title='Select File', defaultextension='.png', filetypes=(('Portable Network Graphics (.png)','*.png'), ('All Files','*.*')))
+            target = filedialog.askopenfilename(title='Select File', defaultextension='.png', initialdir=self.default_open,
+                filetypes=(('Portable Network Graphics (.png)','*.png'), ('All Files','*.*')))
             self.original_var.set(target)
+            self.default_open = os.path.dirname(os.path.abspath(target))
         elif self.original_type_var.get() == 'folder':
             target = filedialog.askdirectory(title='Select Folder')
             self.original_var.set(target)
+            self.default_open = target
 
     def browse_destination(self):
-        target = filedialog.askdirectory(title='Select Folder')
+        target = filedialog.askdirectory(title='Select Folder', initialdir=self.default_save)
         self.destination_var.set(target)
+        self.default_save = target
 
     def load_preset_file(self):
         # Load a json file with colors listed
-        target = filedialog.askopenfilename(title='Select File', defaultextension='.json',
+        target = filedialog.askopenfilename(title='Select File', defaultextension='.json', initialdir=self.default_presets,
             filetypes=(('JavaScript Object Notation (.json)','*.json'), ('All Files','*.*')))
         if target != '': # Make sure the user didn't cancel
+            self.default_presets = os.path.dirname(os.path.abspath(target))
             with open(target, "r") as read_file:
                 data = json.load(read_file)
 
@@ -225,8 +236,10 @@ class MainWindow(tk.Frame):
 
     def save_preset_file(self):
         # Create a new JSON file to save self.colors
-        target = filedialog.asksaveasfilename(title='Save As...', defaultextension='.json', filetypes=(('JavaScript Object Notation (.json)','*.json'), ('All Files','*.*')))
+        target = filedialog.asksaveasfilename(title='Save As...', defaultextension='.json', initialdir=self.default_presets,
+            filetypes=(('JavaScript Object Notation (.json)','*.json'), ('All Files','*.*')))
         if target != '': # Make sure the user didn't cancel
+            self.default_presets = os.path.dirname(os.path.abspath(target))
             with open(target, "w") as write_file:
                 # Only save the RGB values
                 self.to_save = []
