@@ -150,11 +150,13 @@ class ProcessImages():
         gray = ImageOps.grayscale(original)
 
         if self.color_mode == 'colorize':
+            # If the top-left pixel is fully transparent, ignore the transparent background on the autocontrast function
             transparent = original.getpixel((0, 0))[3]
             if transparent == 0:
                 do_ignore = 0
             else:
                 do_ignore = None
+
             # Adjust contrast so true black and true white exist
             contrast = ImageOps.autocontrast(gray, ignore=do_ignore)
 
