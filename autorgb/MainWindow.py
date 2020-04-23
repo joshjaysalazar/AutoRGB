@@ -99,17 +99,21 @@ class MainWindow(tk.Frame):
         self.organize_by_color.grid(column=2, row=6, sticky=tk.W)
 
         # White Threshold
-        self.white_thresh_label = tk.Label(self, text="White Threshold")
-        self.white_thresh_label.grid(column=0, row=7, stick=tk.W)
+        self.midpoint_label = tk.Label(self, text='B/W Midpoint')
+        self.midpoint_label.grid(column=0, row=7, stick=tk.W)
 
-        self.white_thresh_var = tk.StringVar()
-        self.white_thresh_var.set(0)
-        self.white_thresh_slider = ttk.Scale(self, length=180, orient=tk.HORIZONTAL, variable=self.white_thresh_var, from_=0, to=100,
-            command=lambda s:self.white_thresh_var.set('%d' % float(s))) # Sets the output to an integer
-        self.white_thresh_slider.grid(column=0, row=8, columnspan=3, sticky=tk.W)
+        self.midpoint_var = tk.StringVar()
+        self.midpoint_var.set(127)
+        self.midpoint_slider = ttk.Scale(self, length=180, orient=tk.HORIZONTAL, variable=self.midpoint_var, from_=0, to=255,
+            command=lambda s:self.midpoint_var.set('%d' % float(s))) # Sets the output to an integer
+        self.midpoint_slider.grid(column=0, row=8, columnspan=3, sticky=tk.W)
+        self.midpoint_slider_tooltip = CreateToolTip.CreateToolTip(self.midpoint_slider,
+            'Adjusts the weight of white vs. black when in "Shift" mode. Lower numbers tend to mean more white, and vice versa.')
 
-        self.white_thresh_entry = ttk.Entry(self, textvariable=self.white_thresh_var, width=5)
-        self.white_thresh_entry.grid(column=3, row=8, sticky=tk.W)
+        self.midpoint_entry = ttk.Entry(self, textvariable=self.midpoint_var, width=5)
+        self.midpoint_entry.grid(column=3, row=8, sticky=tk.W)
+        self.midpoint_entry_tooltip = CreateToolTip.CreateToolTip(self.midpoint_entry,
+            'Adjusts the weight of white vs. black when in "Shift" mode. Lower numbers tend to mean more white, and vice versa.')
 
         # Color Mode
         self.color_mode_label = tk.Label(self, text='Color Mode')
@@ -119,10 +123,12 @@ class MainWindow(tk.Frame):
         self.color_mode_var.set('colorize')
         self.color_mode_colorize = ttk.Radiobutton(self, text='Colorize', variable=self.color_mode_var, value='colorize')
         self.color_mode_colorize.grid(column=0, row=10, sticky=tk.W)
-        self.colorize_tooltip = CreateToolTip.CreateToolTip(self.color_mode_colorize, 'Converts every color in the image to a relative shade of the new color')
-        self.color_mode_average = ttk.Radiobutton(self, text='Average', variable=self.color_mode_var, value='average')
+        self.colorize_tooltip = CreateToolTip.CreateToolTip(self.color_mode_colorize,
+            'Converts every color in the image, including black, to a relative shade of the new color')
+        self.color_mode_average = ttk.Radiobutton(self, text='Shift', variable=self.color_mode_var, value='shift')
         self.color_mode_average.grid(column=0, row=11, sticky=tk.W)
-        self.average_tooltip = CreateToolTip.CreateToolTip(self.color_mode_average, 'Blends to the average of the original color and the new color')
+        self.average_tooltip = CreateToolTip.CreateToolTip(self.color_mode_average,
+            'Shifts the image to the shade of the new color, maintaining the black pixels')
 
         # Process Images
         self.process_images = ttk.Button(self, text='Process Images', command=self.process_image_files, width = 20)
@@ -257,7 +263,7 @@ class MainWindow(tk.Frame):
         original_path = self.original_var.get()
         destination_path = self.destination_var.get()
         output_format = self.output_var.get()
-        white_thresh = int(self.white_thresh_var.get())
+        white_thresh = int(self.midpoint_var.get())
         color_mode = self.color_mode_var.get()
         color_list = self.colors
         progress_bar = self.progress_var

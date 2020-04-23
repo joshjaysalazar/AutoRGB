@@ -3,16 +3,17 @@ import colorsys
 from PIL import Image
 from PIL import ImageOps
 import os
+import math
 
 class ProcessImages():
-    def __init__(self, master, original_type, original_path, destination_path, output_format, white_thresh, color_mode, color_list, progress_bar, progress_label, organize):
+    def __init__(self, master, original_type, original_path, destination_path, output_format, midpoint, color_mode, color_list, progress_bar, progress_label, organize):
         # Expose needed variables to all functions in the class
         self.master = master
         self.original_type = original_type
         self.original_path = original_path
         self.destination_path = destination_path
         self.output_format = output_format
-        self.white_thresh = white_thresh / 100.
+        self.midpoint = midpoint
         self.color_mode = color_mode
         self.color_list = color_list
         self.progress_bar = progress_bar
@@ -141,57 +142,32 @@ class ProcessImages():
         pixel = image.getpixel((i, j))
         return pixel
 
-    def convert_image(self, image, r_adjust, g_adjust, b_adjust):
-        # Get size
-        width, height = image.size
+    def convert_image(self, original, r_adjust, g_adjust, b_adjust):
+        # Separate the alpha channel
+        alpha = original.getchannel('A')
 
-        # Create new Image and a Pixel Map
-        new = self.create_image(width, height)
-        pixels = new.load()
+        # Convert to grayscale & adjust contrast so black and white are both present
+        gray = ImageOps.grayscale(original)
 
-        # Apply HSV filter
-        for i in range(width):
-            for j in range(height):
-                # Get Pixel
-                pixel = self.get_pixel(image, i, j)
+        if self.color_mode == 'colorize':
+            transparent = original.getpixel((0, 0))[3]
+            if transparent == 0:
+                do_ignore = 0
+            else:
+                do_ignore = None
+            # Adjust contrast so true black and true white exist
+            contrast = ImageOps.autocontrast(gray, ignore=do_ignore)
 
-                # Get RGBA values (This are int from 0 to 255)
-                r = pixel[0]
-                g = pixel[1]
-                b = pixel[2]
-                if len(pixel) > 3: # Check to see if an alpha channel exists
-                    a = pixel[3]
-                else: # If it doesn't, just set alpha to full
-                    a = 255
+            # Colorize the grayscale image
+            result = ImageOps.colorize(contrast, (int(r_adjust), int(g_adjust), int(b_adjust)), 'white')
 
-                # Convert RGB adjust to HSV adjust
-                h_adjust, s_adjust, v_adjust = colorsys.rgb_to_hsv(float(r_adjust)/255., float(g_adjust)/255., float(b_adjust)/255.)
+        if self.color_mode == 'shift':
+            # Colorize the grayscale image w/ a midpoint setting
+            result = ImageOps.colorize(gray, 'black', 'white', (int(r_adjust), int(g_adjust), int(b_adjust)),
+                midpoint=self.midpoint)
 
-                # Convert to HSV space
-                h, s, v = colorsys.rgb_to_hsv(r/255., g/255., b/255.)
-
-                # Convert each value to the value in the list
-                if self.color_mode == 'colorize':
-                    # Adjust the pixel if above the white threshold
-                    if s <= self.white_thresh and v >= (1. - self.white_thresh):
-                        h = h_adjust
-                        s = s * s_adjust
-                        v = (v - v_adjust) + (s_adjust - s)
-                    else:
-                        h = h_adjust
-                        s = s * s_adjust
-                        v = v * v_adjust
-                elif self.color_mode == 'average':
-                    if s <= self.white_thresh and v >= (1. - self.white_thresh):
-                        pass
-                    else:
-                        h = (h + h_adjust) / 2
-
-                # Convert back to RGB
-                r, g, b = colorsys.hsv_to_rgb(h, s, v)
-
-                # Set Pixel in new image
-                pixels[i, j] = (int(r * 255.9999), int(g * 255.9999), int(b * 255.9999), a)
+        # Add the alpha channel back in
+        result.putalpha(alpha)
 
         # Return the converted image
-        return new
+        return result
