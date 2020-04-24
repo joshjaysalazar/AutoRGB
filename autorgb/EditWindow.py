@@ -55,8 +55,8 @@ class EditWindow(tk.Frame):
         self.red_entry.grid(column=2, row=1, sticky=tk.W)
 
         # Recalcuate color when box leaves focus OR when user presses Return
-        self.red_entry.bind('<FocusOut>', lambda x:self.recalculate_color(active='v'))
-        self.red_entry.bind('<KeyPress-Return>', lambda x:self.recalculate_color(active='v'))
+        self.red_entry.bind('<FocusOut>', lambda x:self.recalculate_color(active='r'))
+        self.red_entry.bind('<KeyPress-Return>', lambda x:self.recalculate_color(active='r'))
 
         # Green Slider
         self.green_label = tk.Label(self, text='G')
@@ -77,8 +77,8 @@ class EditWindow(tk.Frame):
         self.green_entry.grid(column=2, row=2, sticky=tk.W)
 
         # Recalcuate color when box leaves focus OR when user presses Return
-        self.green_entry.bind('<FocusOut>', lambda x:self.recalculate_color(active='v'))
-        self.green_entry.bind('<KeyPress-Return>', lambda x:self.recalculate_color(active='v'))
+        self.green_entry.bind('<FocusOut>', lambda x:self.recalculate_color(active='g'))
+        self.green_entry.bind('<KeyPress-Return>', lambda x:self.recalculate_color(active='g'))
 
         # Blue Slider
         self.blue_label = tk.Label(self, text='B')
@@ -99,8 +99,8 @@ class EditWindow(tk.Frame):
         self.blue_entry.grid(column=2, row=3, sticky=tk.W)
 
         # Recalcuate color when box leaves focus OR when user presses Return
-        self.blue_entry.bind('<FocusOut>', lambda x:self.recalculate_color(active='v'))
-        self.blue_entry.bind('<KeyPress-Return>', lambda x:self.recalculate_color(active='v'))
+        self.blue_entry.bind('<FocusOut>', lambda x:self.recalculate_color(active='b'))
+        self.blue_entry.bind('<KeyPress-Return>', lambda x:self.recalculate_color(active='b'))
 
         # Hue Slider
         self.hue_label = tk.Label(self, text='H')
@@ -121,8 +121,8 @@ class EditWindow(tk.Frame):
         self.hue_entry.grid(column=2, row=4, sticky=tk.W)
 
         # Recalcuate color when box leaves focus OR when user presses Return
-        self.hue_entry.bind('<FocusOut>', lambda x:self.recalculate_color(active='v'))
-        self.hue_entry.bind('<KeyPress-Return>', lambda x:self.recalculate_color(active='v'))
+        self.hue_entry.bind('<FocusOut>', lambda x:self.recalculate_color(active='h'))
+        self.hue_entry.bind('<KeyPress-Return>', lambda x:self.recalculate_color(active='h'))
 
         # Saturation Slider
         self.saturation_label = tk.Label(self, text='S')
@@ -143,8 +143,8 @@ class EditWindow(tk.Frame):
         self.saturation_entry.grid(column=2, row=5, sticky=tk.W)
 
         # Recalcuate color when box leaves focus OR when user presses Return
-        self.saturation_entry.bind('<FocusOut>', lambda x:self.recalculate_color(active='v'))
-        self.saturation_entry.bind('<KeyPress-Return>', lambda x:self.recalculate_color(active='v'))
+        self.saturation_entry.bind('<FocusOut>', lambda x:self.recalculate_color(active='s'))
+        self.saturation_entry.bind('<KeyPress-Return>', lambda x:self.recalculate_color(active='s'))
 
         # Value Slider
         self.value_label = tk.Label(self, text='V')
