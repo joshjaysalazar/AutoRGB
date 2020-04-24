@@ -4,15 +4,15 @@ AutoRGB is a small program used to convert a .PNG image (or group of images) to 
 
 At present, the software only supports .PNG format images. It also supports transparent backgrounds, provided the top-left pixel of the image is fully transparent.
 
-![](header.png)
+![screenshot](header.png)
 
 ## Installation
 
-OS X & Linux:
+**OS X & Linux:**
 
 There is not currently a binary build for OS X or Linux, but the program can still be used, provided Python 3 all the necessary Python libraries are installed (tkinter, PIL, and several libraries already bundled with Python by default). Then, simply run autorgb.py from the autorgb folder.
 
-Windows:
+**Windows:**
 
 The latest Windows binary can be downloaded from the [Releases](https://github.com/joshjaysalazar/AutoRGB/releases) page.
 
