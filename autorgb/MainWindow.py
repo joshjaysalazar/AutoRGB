@@ -41,16 +41,24 @@ class MainWindow(tk.Frame):
         self.original_type_var.set('file')
         self.original_type_file = ttk.Radiobutton(self, text='File', variable=self.original_type_var, value='file')
         self.original_type_file.grid(column=1, row=0, sticky=tk.W)
+        self.original_type_file_tooltip = CreateToolTip.CreateToolTip(self.original_type_file,
+            'Choose a single file for conversion')
         self.original_type_folder = ttk.Radiobutton(self, text='Folder', variable=self.original_type_var, value='folder')
         self.original_type_folder.grid(column=2, row=0, sticky=tk.W)
+        self.original_type_folder_tooltip = CreateToolTip.CreateToolTip(self.original_type_folder,
+            'Choose a folder with multiple images for conversion')
 
         self.original_var = tk.StringVar()
         self.original_var.set('/path/to/file.png')
         self.original_entry = ttk.Entry(self, textvariable=self.original_var)
         self.original_entry.grid(column=0, row=1, columnspan=2)
+        self.original_entry_tooltip = CreateToolTip.CreateToolTip(self.original_entry,
+            'Define the path to the original file')
 
         self.original_button = ttk.Button(self, text='Browse...', command=self.browse_original)
         self.original_button.grid(column=2, row=1, columnspan=2, sticky=tk.E)
+        self.original_button_tooltip = CreateToolTip.CreateToolTip(self.original_button,
+            'Browse to define the path to the original file')
 
         # Destination
         self.destination_label = tk.Label(self, text='Destination')
@@ -60,9 +68,13 @@ class MainWindow(tk.Frame):
         self.destination_var.set('/path/to/destination')
         self.destination_entry = ttk.Entry(self, textvariable=self.destination_var)
         self.destination_entry.grid(column=0, row=3, columnspan=2)
+        self.destination_entry_tooltip = CreateToolTip.CreateToolTip(self.destination_entry,
+            'Define the path to output the converted files')
 
         self.destination_button = ttk.Button(self, text='Browse...', command=self.browse_destination)
         self.destination_button.grid(column=2, row=3, columnspan=2, sticky=tk.E)
+        self.destination_button_tooltip = CreateToolTip.CreateToolTip(self.destination_button,
+            'Browse to define the path to output the converted files')
 
         # Output Format
         self.output_label = tk.Label(self, text='Output Format')
@@ -95,10 +107,14 @@ class MainWindow(tk.Frame):
         self.organize_by_var.set('file')
         self.organize_by_file = ttk.Radiobutton(self, text='File', variable=self.organize_by_var, value='file')
         self.organize_by_file.grid(column=1, row=6, sticky=tk.W)
+        self.organize_by_file_tooltip = CreateToolTip.CreateToolTip(self.organize_by_file,
+            'Output files will be organized by the original file name')
         self.organize_by_color = ttk.Radiobutton(self, text='Color', variable=self.organize_by_var, value='color')
         self.organize_by_color.grid(column=2, row=6, sticky=tk.W)
+        self.organize_by_color_tooltip = CreateToolTip.CreateToolTip(self.organize_by_color,
+            'Output files will be organized by color')
 
-        # White Threshold
+        # B/W Midpoint
         self.midpoint_label = tk.Label(self, text='B/W Midpoint')
         self.midpoint_label.grid(column=0, row=7, stick=tk.W)
 
@@ -133,6 +149,8 @@ class MainWindow(tk.Frame):
         # Process Images
         self.process_images = ttk.Button(self, text='Process Images', command=self.process_image_files, width = 20)
         self.process_images.grid(column=1, row=9, columnspan=3, rowspan=3, sticky=tk.E+tk.N+tk.S, padx=(10, 0), pady=(10,0))
+        self.process_images_tooltip = CreateToolTip.CreateToolTip(self.process_images,
+            'Begin converting the original image(s) to the colors in the color list')
 
         # Progress Bar
         self.progress_label = tk.Label(self, text='Ready.')
@@ -168,18 +186,28 @@ class MainWindow(tk.Frame):
         # Preset Buttons
         self.load_preset_button = ttk.Button(self, text='Load Preset', command=self.load_preset_file)
         self.load_preset_button.grid(column=4, row=13, padx=(10,0))
+        self.load_preset_button_tooltip = CreateToolTip.CreateToolTip(self.load_preset_button,
+            'Load a preset list of colors')
 
         self.save_preset_button = ttk.Button(self, text='Save Preset', command=self.save_preset_file)
         self.save_preset_button.grid(column=5, row=13)
+        self.save_preset_button_tooltip = CreateToolTip.CreateToolTip(self.save_preset_button,
+            'Save the current list of colors as a preset')
 
         self.add_color_button = ttk.Button(self, text='Add Color', command=self.add_color)
         self.add_color_button.grid(column=6, row=13)
+        self.add_color_button_tooltip = CreateToolTip.CreateToolTip(self.add_color_button,
+            'Add a color to the color list')
 
         self.edit_color_button = ttk.Button(self, text='Edit Color', command=self.edit_color)
         self.edit_color_button.grid(column=7, row=13)
+        self.edit_color_button_tooltip = CreateToolTip.CreateToolTip(self.edit_color_button,
+            'Edit the currently selected color')
 
         self.remove_color_button = ttk.Button(self, text='Remove Color', command=self.remove_color)
         self.remove_color_button.grid(column=8, row=13, padx=(0, 10))
+        self.remove_color_button_tooltip = CreateToolTip.CreateToolTip(self.remove_color_button,
+            'Remove the currently selected color from the list')
 
     def browse_original(self):
         if self.original_type_var.get() == 'file':
