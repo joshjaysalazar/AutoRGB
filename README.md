@@ -4,7 +4,7 @@ AutoRGB is a small program used to convert a .PNG image (or group of images) to 
 
 At present, the software only supports .PNG format images. It also supports transparent backgrounds, provided the top-left pixel of the image is fully transparent.
 
-![screenshot](header.png)
+![Screenshot of the main window](screenshot.png)
 
 ## Installation
 
