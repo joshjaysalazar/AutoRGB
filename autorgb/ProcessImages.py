@@ -128,6 +128,28 @@ class ProcessImages():
 
     # Create a new image with the given size
     def create_image(self, i, j):
+        """
+        Create a new RGBA image with a white background.
+
+        Args:
+            i (int): The width of the image in pixels.
+            j (int): The height of the image in pixels.
+
+        Returns:
+            PIL.Image.Image: A new image with the specified dimensions 
+            and a white background.
+
+        Raises:
+            None
+
+        Example:
+            >>> width = 300
+            >>> height = 400
+            >>> new_image = create_image(width, height)
+
+        Notes:
+            - The created image uses the RGBA color mode.
+        """
         image = Image.new("RGBA", (i, j), "white")
         return image
 
