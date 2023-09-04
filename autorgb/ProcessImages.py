@@ -163,11 +163,13 @@ class ProcessImages():
             >>> r_adjust = 1.2
             >>> g_adjust = 0.8
             >>> b_adjust = 1.0
-            >>> converted_image = convert_image(original, r_adjust, g_adjust, b_adjust)
+            >>> converted_image = convert_image(
+                    original, r_adjust, g_adjust, b_adjust
+                )
 
         Notes:
             - The function uses two different methods for image conversion:
-              1. Colorization: Adjusts the grayscale contrast and colorizes the image.
+              1. Colorization: Adjust the grayscale contrast and colorize image.
               2. Shift: Adjusts the color channels with a given midpoint.
             - The function also handles alpha channels.
         """
