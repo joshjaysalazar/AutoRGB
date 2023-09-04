@@ -143,6 +143,36 @@ class ProcessImages():
         return pixel
 
     def convert_image(self, original, r_adjust, g_adjust, b_adjust):
+        """
+        Convert an image by adjusting its color properties.
+
+        Args:
+            original (PIL.Image.Image): The original image to convert.
+            r_adjust (float): The red channel adjustment factor.
+            g_adjust (float): The green channel adjustment factor.
+            b_adjust (float): The blue channel adjustment factor.
+
+        Returns:
+            PIL.Image.Image: The converted image.
+
+        Raises:
+            None
+
+        Example:
+            >>> original = Image.open("path/to/image.png")
+            >>> r_adjust = 1.2
+            >>> g_adjust = 0.8
+            >>> b_adjust = 1.0
+            >>> converted_image = convert_image(
+                    original, r_adjust, g_adjust, b_adjust
+                )
+
+        Notes:
+            - The function uses two different methods for image conversion:
+              1. Colorization: Adjust the grayscale contrast and colorize image.
+              2. Shift: Adjusts the color channels with a given midpoint.
+            - The function also handles alpha channels.
+        """
         # Separate the alpha channel
         alpha = original.getchannel('A')
 
