@@ -274,22 +274,12 @@ class ProcessImages():
         Notes:
             - The function checks whether the specified coordinates are within the image dimensions.
             - Returns None if the coordinates are out of bounds.
-        # Inside image bounds?
-        width, height = image.size
-        if i > width or j > height:
-            return None
-
-        # Get Pixel
-        pixel = image.getpixel((i, j))
-        return pixel
-
-        def convert_image(self, original, r_adjust, g_adjust, b_adjust):
         """
         # Inside image bounds?
         width, height = image.size
         if i > width or j > height:
             return None
-
+        
         # Get Pixel
         pixel = image.getpixel((i, j))
         return pixel
