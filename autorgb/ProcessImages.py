@@ -55,19 +55,24 @@ class ProcessImages():
 
     def process_file(self, file, destination):
         """
-        Process a given image file and save multiple color-processed versions of it to a specified directory.
+        Process a given image file and save multiple color-processed versions of 
+        it to a specified directory.
 
         Args:
             file (str): The file path of the image to be processed.
-            destination (str): The directory where the processed images will be saved.
+            destination (str): The directory where the processed images will be 
+            saved.
 
         Returns:
             None
 
         Raises:
-            PIL.UnidentifiedImageError: If the image cannot be identified and opened.
-            FileNotFoundError: If the specified file or directory does not exist.
-            PermissionError: If read/write permission is denied for the specified file path.
+            PIL.UnidentifiedImageError: If the image cannot be identified and 
+            opened.
+            FileNotFoundError: If the specified file or directory does not 
+            exist.
+            PermissionError: If read/write permission is denied for the 
+            specified file path.
 
         Example:
             >>> file_path = "path/to/original/image.png"
@@ -75,11 +80,16 @@ class ProcessImages():
             >>> process_file(file_path, destination_path)
 
         Notes:
-            - The method uses the `self.open_image` and `self.convert_image` methods for opening and converting the image.
-            - The method iterates over `self.color_list` to produce different color variations of the original image.
-            - File names of the processed images are generated based on the `self.output_format`.
-            - The files can be organized by color into separate folders if `self.organize` is set to 'color'.
-            - The `self.total_processed` attribute is updated and the `self.update_progress` method is called to update the progress.
+            - The method uses the `self.open_image` and `self.convert_image` 
+            methods for opening and converting the image.
+            - The method iterates over `self.color_list` to produce different 
+            color variations of the original image.
+            - File names of the processed images are generated based on the 
+            `self.output_format`.
+            - The files can be organized by color into separate folders if 
+            `self.organize` is set to 'color'.
+            - The `self.total_processed` attribute is updated and the 
+            `self.update_progress` method is called to update the progress.
         """
         # Load Image (JPEG/JPG needs libjpeg to load)
         original = self.open_image(file)
@@ -127,15 +137,18 @@ class ProcessImages():
 
     def update_progress(self):
         """
-        Retrieve the pixel value at a specified (i, j) coordinate in the given image.
+        Retrieve the pixel value at a specified (i, j) coordinate in the given 
+        image.
 
         Args:
-            image (PIL.Image.Image): The image object from which to retrieve the pixel.
+            image (PIL.Image.Image): The image object from which to retrieve the
+            pixel.
             i (int): The x-coordinate of the pixel.
             j (int): The y-coordinate of the pixel.
 
         Returns:
-            tuple or None: The pixel value as a tuple (R, G, B, A) or None if the coordinates are out of bounds.
+            tuple or None: The pixel value as a tuple (R, G, B, A) or None if 
+            the coordinates are out of bounds.
 
         Raises:
             None
@@ -147,7 +160,8 @@ class ProcessImages():
             >>> pixel_value = get_pixel(image, i, j)
 
         Notes:
-            - The function checks whether the specified coordinates are within the image dimensions.
+            - The function checks whether the specified coordinates are within 
+            the image dimensions.
             - Returns None if the coordinates are out of bounds.
         """
         total_queued = len(self.color_list) * self.number_of_images
@@ -173,15 +187,18 @@ class ProcessImages():
         Open an image file from a specified file path.
 
         Args:
-            path (str): The file path of the image to be opened, including the filename.
+            path (str): The file path of the image to be opened, including the 
+            filename.
 
         Returns:
             PIL.Image.Image: The opened image object.
 
         Raises:
-            PIL.UnidentifiedImageError: If the image cannot be identified and opened.
+            PIL.UnidentifiedImageError: If the image cannot be identified and 
+            opened.
             FileNotFoundError: If the specified file does not exist.
-            PermissionError: If read permission is denied for the specified file path.
+            PermissionError: If read permission is denied for the specified 
+            file path.
 
         Example:
             >>> path = "path/to/open/image.png"
@@ -200,15 +217,18 @@ class ProcessImages():
 
         Args:
             image (PIL.Image.Image): The image object to be saved.
-            path (str): The file path where the image will be saved, including the filename.
+            path (str): The file path where the image will be saved, including 
+            the filename.
 
         Returns:
             None
 
         Raises:
-            PIL.Image.UnidentifiedImageError: If the image cannot be identified and saved.
+            PIL.Image.UnidentifiedImageError: If the image cannot be identified 
+            and saved.
             FileNotFoundError: If the specified directory does not exist.
-            PermissionError: If write permission is denied for the specified file path.
+            PermissionError: If write permission is denied for the specified 
+            file path.
 
         Example:
             >>> image = Image.new("RGBA", (300, 400), "white")
@@ -251,10 +271,12 @@ class ProcessImages():
     # Get the pixel from the given image
     def get_pixel(self, image, i, j):
         """
-        Retrieve the pixel value at a specified (i, j) coordinate in the given image.
+        Retrieve the pixel value at a specified (i, j) coordinate in the given 
+        image.
 
         Args:
-            image (PIL.Image.Image): The image object from which to retrieve the pixel.
+            image (PIL.Image.Image): The image object from which to retrieve the
+            pixel.
             i (int): The x-coordinate of the pixel.
             j (int): The y-coordinate of the pixel.
 
@@ -272,7 +294,8 @@ class ProcessImages():
             >>> pixel_value = get_pixel(image, i, j)
 
         Notes:
-            - The function checks whether the specified coordinates are within the image dimensions.
+            - The function checks whether the specified coordinates are within 
+            the image dimensions.
             - Returns None if the coordinates are out of bounds.
         """
         # Inside image bounds?
