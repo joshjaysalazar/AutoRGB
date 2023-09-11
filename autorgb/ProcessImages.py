@@ -54,9 +54,36 @@ class ProcessImages():
                     self.process_file(path, destination)
 
     def process_file(self, file, destination):
+
         # Load Image (JPEG/JPG needs libjpeg to load)
         original = self.open_image(file)
+        """
+        Process a given image file and save multiple color-processed versions of it to a specified directory.
 
+        Args:
+            file (str): The file path of the image to be processed.
+            destination (str): The directory where the processed images will be saved.
+
+        Returns:
+            None
+
+        Raises:
+            PIL.UnidentifiedImageError: If the image cannot be identified and opened.
+            FileNotFoundError: If the specified file or directory does not exist.
+            PermissionError: If read/write permission is denied for the specified file path.
+
+        Example:
+            >>> file_path = "path/to/original/image.png"
+            >>> destination_path = "path/to/save/processed/images"
+            >>> process_file(file_path, destination_path)
+
+        Notes:
+            - The method uses the `self.open_image` and `self.convert_image` methods for opening and converting the image.
+            - The method iterates over `self.color_list` to produce different color variations of the original image.
+            - File names of the processed images are generated based on the `self.output_format`.
+            - The files can be organized by color into separate folders if `self.organize` is set to 'color'.
+            - The `self.total_processed` attribute is updated and the `self.update_progress` method is called to update the progress.
+        """
         # Convert image for each value in colors.py
         image_number = 1
 
@@ -100,6 +127,30 @@ class ProcessImages():
             image_number += 1
 
     def update_progress(self):
+        """
+        Retrieve the pixel value at a specified (i, j) coordinate in the given image.
+
+        Args:
+            image (PIL.Image.Image): The image object from which to retrieve the pixel.
+            i (int): The x-coordinate of the pixel.
+            j (int): The y-coordinate of the pixel.
+
+        Returns:
+            tuple or None: The pixel value as a tuple (R, G, B, A) or None if the coordinates are out of bounds.
+
+        Raises:
+            None
+
+        Example:
+            >>> image = Image.open("path/to/image.png")
+            >>> i = 100
+            >>> j = 150
+            >>> pixel_value = get_pixel(image, i, j)
+
+        Notes:
+            - The function checks whether the specified coordinates are within the image dimensions.
+            - Returns None if the coordinates are out of bounds.
+        """
         total_queued = len(self.color_list) * self.number_of_images
         if self.total_processed < total_queued:
             progress_out_of = 'Processed image ' + str(self.total_processed) + ' of ' + str(total_queued) + '...'
@@ -119,11 +170,56 @@ class ProcessImages():
 
     # Open an Image
     def open_image(self, path):
+        """
+        Open an image file from a specified file path.
+
+        Args:
+            path (str): The file path of the image to be opened, including the filename.
+
+        Returns:
+            PIL.Image.Image: The opened image object.
+
+        Raises:
+            PIL.UnidentifiedImageError: If the image cannot be identified and opened.
+            FileNotFoundError: If the specified file does not exist.
+            PermissionError: If read permission is denied for the specified file path.
+
+        Example:
+            >>> path = "path/to/open/image.png"
+            >>> opened_image = open_image(path)
+
+        Notes:
+            - The function uses PIL to open the image.
+        """
         newImage = Image.open(path)
         return newImage
 
     # Save Image
     def save_image(self, image, path):
+        """
+        Save a given image to a specified file path in PNG format.
+
+        Args:
+            image (PIL.Image.Image): The image object to be saved.
+            path (str): The file path where the image will be saved, including the filename.
+
+        Returns:
+            None
+
+        Raises:
+            PIL.Image.UnidentifiedImageError: If the image cannot be identified and saved.
+            FileNotFoundError: If the specified directory does not exist.
+            PermissionError: If write permission is denied for the specified file path.
+
+        Example:
+            >>> image = Image.new("RGBA", (300, 400), "white")
+            >>> path = "path/to/save/image.png"
+            >>> save_image(image, path)
+
+        Notes:
+            - The image will be saved in PNG format.
+        """
+
         image.save(path, 'png')
 
     # Create a new image with the given size
@@ -155,6 +251,41 @@ class ProcessImages():
 
     # Get the pixel from the given image
     def get_pixel(self, image, i, j):
+        """
+        Retrieve the pixel value at a specified (i, j) coordinate in the given image.
+
+        Args:
+            image (PIL.Image.Image): The image object from which to retrieve the pixel.
+            i (int): The x-coordinate of the pixel.
+            j (int): The y-coordinate of the pixel.
+
+        Returns:
+            tuple or None: The pixel value as a tuple (R, G, B, A) or None if 
+            the coordinates are out of bounds.
+
+        Raises:
+            None
+
+        Example:
+            >>> image = Image.open("path/to/image.png")
+            >>> i = 100
+            >>> j = 150
+            >>> pixel_value = get_pixel(image, i, j)
+
+        Notes:
+            - The function checks whether the specified coordinates are within the image dimensions.
+            - Returns None if the coordinates are out of bounds.
+        # Inside image bounds?
+        width, height = image.size
+        if i > width or j > height:
+            return None
+
+        # Get Pixel
+        pixel = image.getpixel((i, j))
+        return pixel
+
+        def convert_image(self, original, r_adjust, g_adjust, b_adjust):
+        """
         # Inside image bounds?
         width, height = image.size
         if i > width or j > height:
