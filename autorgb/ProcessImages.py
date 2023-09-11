@@ -54,9 +54,6 @@ class ProcessImages():
                     self.process_file(path, destination)
 
     def process_file(self, file, destination):
-
-        # Load Image (JPEG/JPG needs libjpeg to load)
-        original = self.open_image(file)
         """
         Process a given image file and save multiple color-processed versions of it to a specified directory.
 
@@ -84,6 +81,8 @@ class ProcessImages():
             - The files can be organized by color into separate folders if `self.organize` is set to 'color'.
             - The `self.total_processed` attribute is updated and the `self.update_progress` method is called to update the progress.
         """
+        # Load Image (JPEG/JPG needs libjpeg to load)
+        original = self.open_image(file)
         # Convert image for each value in colors.py
         image_number = 1
 
