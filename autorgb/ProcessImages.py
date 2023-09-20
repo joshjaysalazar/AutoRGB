@@ -222,21 +222,6 @@ class ProcessImages():
 
         Returns:
             None
-
-        Raises:
-            PIL.Image.UnidentifiedImageError: If the image cannot be identified 
-            and saved.
-            FileNotFoundError: If the specified directory does not exist.
-            PermissionError: If write permission is denied for the specified 
-            file path.
-
-        Example:
-            >>> image = Image.new("RGBA", (300, 400), "white")
-            >>> path = "path/to/save/image.png"
-            >>> save_image(image, path)
-
-        Notes:
-            - The image will be saved in PNG format.
         """
 
         image.save(path, 'png')
@@ -253,17 +238,6 @@ class ProcessImages():
         Returns:
             PIL.Image.Image: A new image with the specified dimensions 
             and a white background.
-
-        Raises:
-            None
-
-        Example:
-            >>> width = 300
-            >>> height = 400
-            >>> new_image = create_image(width, height)
-
-        Notes:
-            - The created image uses the RGBA color mode.
         """
         image = Image.new("RGBA", (i, j), "white")
         return image
@@ -283,20 +257,6 @@ class ProcessImages():
         Returns:
             tuple or None: The pixel value as a tuple (R, G, B, A) or None if 
             the coordinates are out of bounds.
-
-        Raises:
-            None
-
-        Example:
-            >>> image = Image.open("path/to/image.png")
-            >>> i = 100
-            >>> j = 150
-            >>> pixel_value = get_pixel(image, i, j)
-
-        Notes:
-            - The function checks whether the specified coordinates are within 
-            the image dimensions.
-            - Returns None if the coordinates are out of bounds.
         """
         # Inside image bounds?
         width, height = image.size
@@ -319,24 +279,6 @@ class ProcessImages():
 
         Returns:
             PIL.Image.Image: The converted image.
-
-        Raises:
-            None
-
-        Example:
-            >>> original = Image.open("path/to/image.png")
-            >>> r_adjust = 1.2
-            >>> g_adjust = 0.8
-            >>> b_adjust = 1.0
-            >>> converted_image = convert_image(
-                    original, r_adjust, g_adjust, b_adjust
-                )
-
-        Notes:
-            - The function uses two different methods for image conversion:
-              1. Colorization: Adjust the grayscale contrast and colorize image.
-              2. Shift: Adjusts the color channels with a given midpoint.
-            - The function also handles alpha channels.
         """
         # Separate the alpha channel
         alpha = original.getchannel('A')
